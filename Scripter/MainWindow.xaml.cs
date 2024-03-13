@@ -35,7 +35,7 @@ namespace Scripter
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var path = PathTextBox.Text;
+            var path = FolderPathTextBox.Text;
             if (string.IsNullOrEmpty(path))
             {
                 return;

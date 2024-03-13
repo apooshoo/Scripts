@@ -19,13 +19,17 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="5" Orientation="Vertical">
-            
-            <TextBox x:Name="PathTextBox"
-                     Margin="5" Padding="5,2"  Width="200" 
-                     VerticalContentAlignment="Center" 
-                     GotFocus="TextBox_GotFocus_SelectAll"/>
 
-            <ComboBox x:Name="FolderSelectionComboBox" 
+            <StackPanel Margin="5" Orientation="Horizontal">
+                <TextBox x:Name="FolderPathTextBox"
+                         Margin="5,5,0,5" Padding="5,2"  Width="200" 
+                         VerticalContentAlignment="Center" 
+                         GotFocus="TextBox_GotFocus_SelectAll"/>
+                <Button Margin="0,5,5,5" Padding="5,0">Select Folder</Button>
+            </StackPanel>
+
+            <StackPanel Margin="5">
+                <ComboBox x:Name="FolderSelectionComboBox" 
                 Margin="5" Padding="5,2" 
                 VerticalContentAlignment="Center"
                 Text="~Please select~"
@@ -33,6 +37,7 @@
                 SelectedValuePath="Text"
                 IsEditable="true" 
                 SelectionChanged="FolderSelectionComboBox_SelectionChanged"/>
+            </StackPanel>
 
             <StackPanel Margin="5">
                 <StackPanel.Resources>
