@@ -20,7 +20,8 @@ namespace Scripts
 
                 if (fileName.Length < x)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(x));
+                    return;
+                    //throw new ArgumentOutOfRangeException(nameof(x));
                 } 
                 else if (fileName.Length < x + y)
                 {
