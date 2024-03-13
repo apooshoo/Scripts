@@ -45,21 +45,17 @@ namespace Scripter
                 path, FolderSelectionComboBox.SelectedItem as FolderSelectionOption);
 
             // Start listening to messages
-            var log = new ConcurrentQueue<string>();
-            var cancelTokenSource = new CancellationTokenSource();
-            var task = Task.Run(() =>
-            {
-                WriteLogsToUiPeriodically(log, cancelTokenSource.Token);
-            }, cancelTokenSource.Token);
+            ConcurrentQueue<string> log = new();
+            CancellationTokenSource logListenerCancelTokenSource = new();
+            Task logListenerTask = StartLogging(log, logListenerCancelTokenSource);
 
             // Start operations
-            Trim(folders, log);
-            Convert(folders, log);
+            await PerformWork(folders, log);
 
             // Stop listening to messages
-            cancelTokenSource.Cancel();
-            cancelTokenSource.Dispose();
-            task.Wait();
+            logListenerCancelTokenSource.Cancel();
+            logListenerCancelTokenSource.Dispose();
+            await logListenerTask;
 
             // Wrap up - clear messages if any (there should be none)
             Thread.Sleep(200);
@@ -67,11 +63,27 @@ namespace Scripter
             WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
         }
 
-        private void Trim(string[] folders, ConcurrentQueue<string> log)
+        private Task PerformWork(string[] folders, ConcurrentQueue<string> log)
         {
-            if (TrimCheckBox.IsChecked.GetValueOrDefault() 
-                && int.TryParse(TrimLeft.Text, out var trimLeft) 
-                && int.TryParse(TrimRight.Text, out var trimRight)
+            var trimIsChecked = TrimCheckBox.IsChecked;
+            var trimLeft = TrimLeft.Text;
+            var trimRight = TrimRight.Text; 
+
+            var convertIsChecked = ConvertCheckBox.IsChecked;
+
+            return Task.Run(() =>
+            {
+                Trim(folders, trimIsChecked, trimLeft, trimRight, log);
+                Convert(folders, convertIsChecked, log);
+            });
+        }
+
+        private void Trim(string[] folders, bool? isChecked, string trimLeftStr, string trimRightStr, 
+            ConcurrentQueue<string> log)
+        {
+            if (isChecked.GetValueOrDefault() 
+                && int.TryParse(trimLeftStr, out var trimLeft) 
+                && int.TryParse(trimRightStr, out var trimRight)
                 && trimLeft + trimRight > 0)
             {
                 foreach (var folder in folders)
@@ -81,9 +93,9 @@ namespace Scripter
             }
         }
 
-        private void Convert(string[] folders, ConcurrentQueue<string> log)
+        private void Convert(string[] folders, bool? isChecked, ConcurrentQueue<string> log)
         {
-            if (ConvertCheckBox.IsChecked.GetValueOrDefault())
+            if (isChecked.GetValueOrDefault())
             {
                 foreach (var folder in folders)
                 {

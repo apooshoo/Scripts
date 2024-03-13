@@ -4,6 +4,10 @@ namespace Scripter
 {
     partial class MainWindow
     {
+        private Task StartLogging(ConcurrentQueue<string> log, CancellationTokenSource cancelTokenSource)
+            => Task.Run(() => WriteLogsToUiPeriodically(log, cancelTokenSource.Token), cancelTokenSource.Token);
+        
+
         private int _whileLoopCountTest = 0;
         private void WriteLogsToUiPeriodically(ConcurrentQueue<string> log, CancellationToken token)
         {
