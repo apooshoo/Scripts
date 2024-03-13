@@ -54,6 +54,7 @@ namespace Scripter
 
             // Start operations
             Trim(folders, log);
+            Convert(folders, log);
 
             // Stop listening to messages
             cancelTokenSource.Cancel();
@@ -76,6 +77,17 @@ namespace Scripter
                 foreach (var folder in folders)
                 {
                     FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight, log);
+                }
+            }
+        }
+
+        private void Convert(string[] folders, ConcurrentQueue<string> log)
+        {
+            if (ConvertCheckBox.IsChecked.GetValueOrDefault())
+            {
+                foreach (var folder in folders)
+                {
+                    FileConverter.ConvertWebps(folder, log);
                 }
             }
         }

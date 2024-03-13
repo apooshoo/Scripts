@@ -25,7 +25,7 @@ namespace Scripts
             }
             catch (Exception e)
             {
-                log.TryAdd($"Error while trimming for : {folderPath} : {e.Message}");
+                log.TryAdd($"Error while trimming for: {folderPath} : {e.Message}");
             }
         }
 

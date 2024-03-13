@@ -48,6 +48,10 @@
                 </StackPanel>
             </StackPanel>
 
+            <StackPanel Margin="5">
+                <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
+            </StackPanel>
+
         </StackPanel>
 
         

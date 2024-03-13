@@ -1,35 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scripts
 {
     public static class FileConverter
     {
-        public static void ConvertWebps(string folderPath)
-        {
-            var cmd1 = "magick mogrify -format jpeg *.webp";
-            var cmd2 = "del *.webp";
+        const string cmd1 = "magick mogrify -format jpeg *.webp";
+        const string cmd2 = "del *.webp";
 
+        public static void ConvertWebps(string folderPath, IProducerConsumerCollection<string> log)
+        {
             try
             {
                 if (NeedsConverting(folderPath))
                 {
-                    Console.WriteLine("Converting: " + folderPath);
+                    log.TryAdd("Converting: " + folderPath);
                     ExecuteCommand(cmd1, folderPath);
                     ExecuteCommand(cmd2, folderPath);
                 }
                 else
                 {
-                    Console.WriteLine("Skipping: " + folderPath);
+                    log.TryAdd("Skipping: " + folderPath);
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine("Error: " + folderPath + " " + ex.Message);
+                log.TryAdd($"Error while converting for: {folderPath} : {e.Message}");
             }
         }
 
@@ -41,19 +37,17 @@ namespace Scripts
             processStartInfo.Arguments = $"-Command \"{command}\"";
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.CreateNoWindow = true;
 
             using var process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            Console.WriteLine(output);
         }
 
         private static bool NeedsConverting(string path)
         {
             var files = Directory.GetFiles(path);
-            var needs = files.Any(f => Path.GetExtension(f).Contains("webp"));
-            return needs;
+            return files.Any(f => Path.GetExtension(f).Contains("webp"));
         }
     }
 }

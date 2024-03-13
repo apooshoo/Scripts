@@ -34,7 +34,7 @@ public class Scripter
         //FileRenamer.NormaliseFilenames(path);
         //FileRenamer.KeepFirstXAndLastYCharacters(path, 0, 3);
 
-        FileConverter.ConvertWebps(path);
+        //FileConverter.ConvertWebps(path);
     }
 
     private void Notify(string path)
