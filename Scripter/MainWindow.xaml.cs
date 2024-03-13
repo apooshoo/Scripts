@@ -82,7 +82,13 @@ namespace Scripter
         private void Trim_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-            e.Handled = Regex.IsMatch(e.Text, "[^0-9]");
+            e.Handled = Regex.IsMatch(e.Text, "[^0-9]") && e.Text.Length <= 2; 
+        }
+
+        private void Trim_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            textBox.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
         }
     }
 }
