@@ -22,7 +22,8 @@
             
             <TextBox x:Name="PathTextBox"
                      Margin="5" Padding="5,2"  Width="200" 
-                     VerticalContentAlignment="Center" />
+                     VerticalContentAlignment="Center" 
+                     GotFocus="TextBox_GotFocus_SelectAll"/>
 
             <ComboBox x:Name="FolderSelectionComboBox" 
                 Margin="5" Padding="5,2" 
@@ -42,9 +43,9 @@
                     Visibility="{Binding ElementName=TrimCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Label>To keep:</Label>
                     <Label>Left:</Label>
-                    <TextBox x:Name="TrimLeft" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput" GotFocus="Trim_GotFocus"></TextBox>
+                    <TextBox x:Name="TrimLeft" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
                     <Label>Right:</Label>
-                    <TextBox x:Name="TrimRight" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput" GotFocus="Trim_GotFocus"></TextBox>
+                    <TextBox x:Name="TrimRight" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
                 </StackPanel>
             </StackPanel>
 
