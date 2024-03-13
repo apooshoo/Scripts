@@ -68,10 +68,11 @@ namespace Scripter
 
         private void Trim(string[] folders, ConcurrentQueue<string> log)
         {
-            if (TrimCheckBox.IsChecked.GetValueOrDefault())
+            if (TrimCheckBox.IsChecked.GetValueOrDefault() 
+                && int.TryParse(TrimLeft.Text, out var trimLeft) 
+                && int.TryParse(TrimRight.Text, out var trimRight)
+                && trimLeft + trimRight > 0)
             {
-                var trimLeft = Convert.ToInt32(TrimLeft.Text);
-                var trimRight = Convert.ToInt32(TrimRight.Text);
                 foreach (var folder in folders)
                 {
                     FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight, log);

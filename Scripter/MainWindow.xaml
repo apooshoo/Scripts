@@ -37,7 +37,7 @@
                 <StackPanel.Resources>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 </StackPanel.Resources>
-                <CheckBox x:Name="TrimCheckBox" Content="Trim file names" Margin="5" IsChecked="True" />
+                <CheckBox x:Name="TrimCheckBox" Content="Trim file names" Margin="5" />
                 <StackPanel Margin="5" Orientation="Horizontal"
                     Visibility="{Binding ElementName=TrimCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Label>To keep:</Label>
