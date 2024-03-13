@@ -9,35 +9,35 @@ namespace Scripts
 {
     public static class FileConverter
     {
-        public static void ConvertWebps(string path)
+        public static void ConvertWebps(string folderPath)
         {
             var cmd1 = "magick mogrify -format jpeg *.webp";
             var cmd2 = "del *.webp";
 
             try
             {
-                if (NeedsConverting(path))
+                if (NeedsConverting(folderPath))
                 {
-                    Console.WriteLine("Converting: " + path);
-                    ExecuteCommand(cmd1, path);
-                    ExecuteCommand(cmd2, path);
+                    Console.WriteLine("Converting: " + folderPath);
+                    ExecuteCommand(cmd1, folderPath);
+                    ExecuteCommand(cmd2, folderPath);
                 }
                 else
                 {
-                    Console.WriteLine("Skipping: " + path);
+                    Console.WriteLine("Skipping: " + folderPath);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + path + " " + ex.Message);
+                Console.WriteLine("Error: " + folderPath + " " + ex.Message);
             }
         }
 
-        private static void ExecuteCommand(string command, string workingDirectory)
+        private static void ExecuteCommand(string command, string folderPath)
         {
             var processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = "powershell.exe";
-            processStartInfo.WorkingDirectory = workingDirectory;
+            processStartInfo.WorkingDirectory = folderPath;
             processStartInfo.Arguments = $"-Command \"{command}\"";
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;

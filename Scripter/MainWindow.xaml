@@ -9,7 +9,7 @@
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="109*" />
         </Grid.RowDefinitions>
 
@@ -19,22 +19,41 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="5" Orientation="Vertical">
-            <TextBox x:Name="path" Text="Path" 
+            
+            <TextBox x:Name="PathTextBox"
                      Margin="5" Padding="5,2"  Width="200" 
                      VerticalContentAlignment="Center" />
 
-            <ComboBox x:Name="TargetType" 
+            <ComboBox x:Name="FolderSelectionComboBox" 
                 Margin="5" Padding="5,2" 
                 VerticalContentAlignment="Center"
                 Text="~Please select~"
-                DisplayMemberPath="Name"
-                SelectedValuePath="Name"
-                IsEditable="true" SelectionChanged="TargetType_SelectionChanged"/>
+                DisplayMemberPath="Text"
+                SelectedValuePath="Text"
+                IsEditable="true" 
+                SelectionChanged="FolderSelectionComboBox_SelectionChanged"/>
+
+            <StackPanel Margin="5">
+                <StackPanel.Resources>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                </StackPanel.Resources>
+                <CheckBox x:Name="TrimCheckBox" Content="Trim file names" Margin="5" IsChecked="True" />
+                <StackPanel Margin="5" Orientation="Horizontal"
+                    Visibility="{Binding ElementName=TrimCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label>To keep:</Label>
+                    <Label>Left:</Label>
+                    <TextBox x:Name="TrimLeft" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput"></TextBox>
+                    <Label>Right:</Label>
+                    <TextBox x:Name="TrimRight" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput"></TextBox>
+                </StackPanel>
+            </StackPanel>
+
         </StackPanel>
 
+        
+        
         <StackPanel Grid.Column="1" Margin="5,5,5,5">
-            <Label>Feature:</Label>
-            <!--<ListBox x:Name="lstNames" />-->
+            <Button Click="Button_Click">START</Button>
         </StackPanel>
 
     </Grid>
