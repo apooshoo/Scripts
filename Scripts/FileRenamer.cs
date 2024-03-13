@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
+﻿using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic.FileIO;
 
@@ -13,17 +9,23 @@ namespace Scripts
         public static void KeepFirstXAndLastYCharacters(string folderPath, int x, int y, 
             IProducerConsumerCollection<string> log)
         {
-            var fullFileNames = FileSystem.GetFiles(folderPath);
-            var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
-            List<FileInfo> filesToProcess = FilterOutInvalidFiles(files, x, y, log);
-            if (filesToProcess.Any())
+            try
             {
-                log.TryAdd("Trimming contents of: " + folderPath);
-                FormatFileNames(filesToProcess, x, y);
+                var files = FileSystem.GetFiles(folderPath).Select(f => FileSystem.GetFileInfo(f));
+                List<FileInfo> filesToProcess = FilterOutInvalidFiles(files, x, y);
+                if (filesToProcess.Any())
+                {
+                    log.TryAdd("Trimming contents of: " + folderPath);
+                    FormatFileNames(filesToProcess, x, y);
+                }
+                else
+                {
+                    log.TryAdd("Skipped trimming for: " + folderPath);
+                }
             }
-            else
+            catch (Exception e)
             {
-                log.TryAdd("Skipped trimming for: " + folderPath);
+                log.TryAdd($"Error while trimming for : {folderPath} : {e.Message}");
             }
         }
 
@@ -33,7 +35,7 @@ namespace Scripts
             {
                 var fileName = Path.GetFileNameWithoutExtension(file.Name);
 
-                //store until x
+                // Store until x
                 var firstX = string.Empty;
                 if (x > 0)
                 {
@@ -41,7 +43,7 @@ namespace Scripts
                     firstX = fileName[rangeX];
                 }
 
-                //If y, store backwards until y
+                // If y, store backwards until y
                 var lastY = string.Empty;
                 if (y > 0)
                 {
@@ -49,6 +51,7 @@ namespace Scripts
                     lastY = fileName[rangeY];
                 }
 
+                // Rename
                 var newFileName = Path.Combine(file.DirectoryName, firstX + lastY + file.Extension);
                 if (!file.FullName.Equals(newFileName))
                 {
@@ -57,8 +60,7 @@ namespace Scripts
             }
         }
 
-        private static List<FileInfo> FilterOutInvalidFiles(IEnumerable<FileInfo> files, int x, int y, 
-            IProducerConsumerCollection<string> log)
+        private static List<FileInfo> FilterOutInvalidFiles(IEnumerable<FileInfo> files, int x, int y)
         {
             var filesToProcess = new List<FileInfo>();
 
@@ -70,15 +72,13 @@ namespace Scripts
                 {
                     continue;
                 }
-                else if (fileName.Length < x + y)
-                {
-                    log.TryAdd("Error: Invalid parameters for: " + fileName);
-                    throw new ArgumentOutOfRangeException(nameof(y));
-                }
                 else if (x == 0 && y == 0)
                 {
-                    log.TryAdd("Error: Invalid parameters for: " + fileName);
-                    throw new InvalidOperationException("Nothing to do.");
+                    continue;
+                }
+                else if (fileName.Length < x + y)
+                {
+                    throw new Exception($"Invalid parameters for: {fileName}");
                 }
 
                 filesToProcess.Add(file);
