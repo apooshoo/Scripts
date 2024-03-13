@@ -1,4 +1,5 @@
-﻿using Scripter.Models;
+﻿using Microsoft.Win32;
+using Scripter.Models;
 using Scripter.Services;
 using Scripts;
 using System.Collections.Concurrent;
@@ -114,6 +115,24 @@ namespace Scripter
         {
             var textBox = sender as TextBox;
             textBox.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
+        }
+
+        private void FolderPathTextBox_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select folder",
+                InitialDirectory = "C:\\Users\\jonat\\Downloads",
+                //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Multiselect = false,
+            };
+
+            dialog.ShowDialog();
+            var result = dialog.FolderNames.FirstOrDefault();
+            if (!string.IsNullOrEmpty(result))
+            {
+                FolderPathTextBox.Text = result;
+            }
         }
     }
 }
