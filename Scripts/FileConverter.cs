@@ -15,8 +15,8 @@ namespace Scripts
                 if (NeedsConverting(folderPath))
                 {
                     log.TryAdd("Converting: " + folderPath);
-                    ExecuteCommand(cmd1, folderPath);
-                    ExecuteCommand(cmd2, folderPath);
+                    ExecuteCommand(cmd1, folderPath, log);
+                    ExecuteCommand(cmd2, folderPath, log);
                 }
                 else
                 {
@@ -29,7 +29,8 @@ namespace Scripts
             }
         }
 
-        private static void ExecuteCommand(string command, string folderPath)
+        private static void ExecuteCommand(string command, string folderPath,
+            IProducerConsumerCollection<string> log)
         {
             var processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = "powershell.exe";
@@ -42,6 +43,11 @@ namespace Scripts
             using var process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            if (!string.IsNullOrEmpty(output))
+            {
+                log.TryAdd("Powershell output: " + output);
+            }
         }
 
         private static bool NeedsConverting(string path)
