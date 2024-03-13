@@ -1,0 +1,41 @@
+﻿<Window x:Class="Scripter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Scripter"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="109*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="517*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="5" Orientation="Vertical">
+            <TextBox x:Name="path" Text="Path" 
+                     Margin="5" Padding="5,2"  Width="200" 
+                     VerticalContentAlignment="Center" />
+
+            <ComboBox x:Name="TargetType" 
+                Margin="5" Padding="5,2" 
+                VerticalContentAlignment="Center"
+                Text="~Please select~"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Name"
+                IsEditable="true" SelectionChanged="TargetType_SelectionChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="5,5,5,5">
+            <Label>Feature:</Label>
+            <!--<ListBox x:Name="lstNames" />-->
+        </StackPanel>
+
+    </Grid>
+</Window>
