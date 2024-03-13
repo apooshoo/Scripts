@@ -1,11 +1,10 @@
-﻿using Scripts;
+﻿using Scripter.Models;
+using Scripter.Services;
+using Scripts;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Scripter
@@ -25,11 +24,7 @@ namespace Scripter
 
         private void Setup()
         {
-            FolderSelectionComboBox.ItemsSource = new FolderSelectionOption[]
-            {
-                new FolderSelectionOption { Enum = FolderSelectionEnum.Folder, Text = "Selected folder"},
-                new FolderSelectionOption { Enum = FolderSelectionEnum.SubFolders, Text = "Subfolders of selected folder"},
-            };
+            FolderSelectionComboBox.ItemsSource = FolderSelectionService.GetDefaultOptions();
             FolderSelectionComboBox.SelectedIndex = 0;
         }
 
@@ -40,28 +35,33 @@ namespace Scripter
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var log = new ConcurrentQueue<string>();
-
             var path = PathTextBox.Text;
             if (string.IsNullOrEmpty(path))
             {
                 return;
             }
 
-            string[] folders = GetFoldersToProcess(path);
+            string[] folders = FolderSelectionService.GetFoldersToProcess(
+                path, FolderSelectionComboBox.SelectedItem as FolderSelectionOption);
 
+            // Start listening to messages
+            var log = new ConcurrentQueue<string>();
             var cancelTokenSource = new CancellationTokenSource();
             var task = Task.Run(() =>
             {
                 WriteLogsToUiPeriodically(log, cancelTokenSource.Token);
             }, cancelTokenSource.Token);
 
+            // Start operations
             Trim(folders, log);
-            cancelTokenSource.Cancel();
-            task.Wait();
-            cancelTokenSource.Dispose();
 
-            Thread.Sleep(300);
+            // Stop listening to messages
+            cancelTokenSource.Cancel();
+            cancelTokenSource.Dispose();
+            task.Wait();
+
+            // Wrap up - clear messages if any (there should be none)
+            Thread.Sleep(200);
             WriteRemainingLogs(log);
             WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
         }
@@ -79,44 +79,10 @@ namespace Scripter
             }
         }
 
-        private string[] GetFoldersToProcess(string path)
-        {
-            var folderSelection = FolderSelectionComboBox.SelectedItem as FolderSelectionOption;
-            return GetFoldersToProcess(path, folderSelection);
-        }
-
-        private static string[] GetFoldersToProcess(string path, FolderSelectionOption? folderSelection)
-        {
-            if (folderSelection == null)
-            {
-                return Array.Empty<string>();
-            }
-            else if (folderSelection.Enum == FolderSelectionEnum.Folder)
-            {
-                return [path];
-            }
-            else
-            {
-                return Directory.GetDirectories(path).ToArray();
-            }
-        }
-
         private void Trim_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
             e.Handled = Regex.IsMatch(e.Text, "[^0-9]");
         }
-    }
-
-    public class FolderSelectionOption
-    {
-        public FolderSelectionEnum Enum { get; set; }
-        public string Text { get; set; }
-    }
-
-    public enum FolderSelectionEnum
-    {
-        Folder,
-        SubFolders
     }
 }
