@@ -1,17 +1,12 @@
 ﻿using Scripts;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Scripter
 {
@@ -25,6 +20,7 @@ namespace Scripter
             InitializeComponent();
             Setup();
             DataContext = this;
+            WriteLogToUi("Initialised.");
         }
 
         private void Setup()
@@ -42,41 +38,105 @@ namespace Scripter
             //debug
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            var log = new ConcurrentQueue<string>();
+
             var path = PathTextBox.Text;
             if (string.IsNullOrEmpty(path))
             {
                 return;
             }
 
-            var folderSelection = FolderSelectionComboBox.SelectedItem as FolderSelectionOption;
-            List<string> folders = GetFoldersToProcess(path, folderSelection);
+            string[] folders = GetFoldersToProcess(path);
 
+            var cancelTokenSource = new CancellationTokenSource();
+            var task = Task.Run(() =>
+            {
+                WriteLogsToUiPeriodically(log, cancelTokenSource.Token);
+            }, cancelTokenSource.Token);
+
+            Trim(folders, log);
+            cancelTokenSource.Cancel();
+            task.Wait();
+            cancelTokenSource.Dispose();
+
+            Thread.Sleep(300);
+            WriteRemainingLogs(log);
+            WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
+        }
+
+        private int _whileLoopCountTest = 0;
+        private void WriteLogsToUiPeriodically(ConcurrentQueue<string> log, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                _whileLoopCountTest++;
+                TryWriteLogToUI(log);
+                Thread.Sleep(50);
+            }
+        }
+
+        private void TryWriteLogToUI(ConcurrentQueue<string> log)
+        {
+            if (log.TryDequeue(out var message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    WriteLogToUi(message);
+                }
+            }
+        }
+
+        private void WriteRemainingLogs(ConcurrentQueue<string> log)
+        {
+            while (!log.IsEmpty)
+            {
+                TryWriteLogToUI(log);
+            }
+        }
+
+        private void WriteLogToUi(string message)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Output.AppendText(message);
+                Output.AppendText(Environment.NewLine);
+            }));
+        }
+
+        private void Trim(string[] folders, ConcurrentQueue<string> log)
+        {
             if (TrimCheckBox.IsChecked.GetValueOrDefault())
             {
                 var trimLeft = Convert.ToInt32(TrimLeft.Text);
                 var trimRight = Convert.ToInt32(TrimRight.Text);
                 foreach (var folder in folders)
                 {
-                    FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight);
+                    FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight, log);
                 }
             }
         }
 
-        private static List<string> GetFoldersToProcess(string path, FolderSelectionOption? folderSelection)
+        private string[] GetFoldersToProcess(string path)
+        {
+            var folderSelection = FolderSelectionComboBox.SelectedItem as FolderSelectionOption;
+            return GetFoldersToProcess(path, folderSelection);
+        }
+
+        private static string[] GetFoldersToProcess(string path, FolderSelectionOption? folderSelection)
         {
             if (folderSelection == null)
             {
-                return new List<string>();
+                return Array.Empty<string>();
             }
             else if (folderSelection.Enum == FolderSelectionEnum.Folder)
             {
-                return new List<string> { path };
+                return [path];
             }
             else
             {
-                return Directory.GetDirectories(path).ToList();
+                return Directory.GetDirectories(path).ToArray();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -9,28 +10,28 @@ namespace Scripts
 {
     public static class FileRenamer
     {
-        public static void KeepFirstXAndLastYCharacters(string path, int x, int y = 0)
+        public static void KeepFirstXAndLastYCharacters(string folderPath, int x, int y, 
+            IProducerConsumerCollection<string> log)
         {
-            var fullFileNames = FileSystem.GetFiles(path);
+            var fullFileNames = FileSystem.GetFiles(folderPath);
             var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
+            List<FileInfo> filesToProcess = FilterOutInvalidFiles(files, x, y, log);
+            if (filesToProcess.Any())
+            {
+                log.TryAdd("Trimming contents of: " + folderPath);
+                FormatFileNames(filesToProcess, x, y);
+            }
+            else
+            {
+                log.TryAdd("Skipped trimming for: " + folderPath);
+            }
+        }
 
-            foreach (var file in files)
+        private static void FormatFileNames(List<FileInfo> filesToProcess, int x, int y)
+        {
+            foreach (var file in filesToProcess)
             {
                 var fileName = Path.GetFileNameWithoutExtension(file.Name);
-
-                if (fileName.Length < x)
-                {
-                    return;
-                    //throw new ArgumentOutOfRangeException(nameof(x));
-                } 
-                else if (fileName.Length < x + y)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(y));
-                }
-                else if (x == 0 &&  y == 0)
-                {
-                    throw new InvalidOperationException("Nothing to do.");
-                }
 
                 //store until x
                 var firstX = string.Empty;
@@ -54,6 +55,36 @@ namespace Scripts
                     file.MoveTo(newFileName);
                 }
             }
+        }
+
+        private static List<FileInfo> FilterOutInvalidFiles(IEnumerable<FileInfo> files, int x, int y, 
+            IProducerConsumerCollection<string> log)
+        {
+            var filesToProcess = new List<FileInfo>();
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileNameWithoutExtension(file.Name);
+
+                if (fileName.Length < x)
+                {
+                    continue;
+                }
+                else if (fileName.Length < x + y)
+                {
+                    log.TryAdd("Error: Invalid parameters for: " + fileName);
+                    throw new ArgumentOutOfRangeException(nameof(y));
+                }
+                else if (x == 0 && y == 0)
+                {
+                    log.TryAdd("Error: Invalid parameters for: " + fileName);
+                    throw new InvalidOperationException("Nothing to do.");
+                }
+
+                filesToProcess.Add(file);
+            }
+
+            return filesToProcess;
         }
 
         public static void NormaliseFilenames(string path)

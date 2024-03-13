@@ -54,6 +54,10 @@
         
         <StackPanel Grid.Column="1" Margin="5,5,5,5">
             <Button Click="Button_Click">START</Button>
+
+            <ScrollViewer>
+                <TextBox x:Name="Output" Text="Starting!" />
+            </ScrollViewer>
         </StackPanel>
 
     </Grid>
