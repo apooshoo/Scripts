@@ -14,8 +14,8 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="517*"/>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="5" Orientation="Vertical">
@@ -58,23 +58,26 @@
             </StackPanel>
 
             <StackPanel Margin="5">
-                
+
                 <Button Click="Button_Click" Padding="5">START</Button>
 
-                <ScrollViewer>
-                    <TextBox x:Name="Output" Padding="5" Text="Starting!" />
-                </ScrollViewer>
-                
+                <TextBox x:Name="Output" Padding="5" 
+                         VerticalScrollBarVisibility="Visible" 
+                         Height="150"
+                         MaxLength="50"
+                         TextWrapping="NoWrap"
+                         Text="Test" />
+
             </StackPanel>
 
         </StackPanel>
-        
-        
 
-        <StackPanel Grid.Column="1" Margin="5">
+
+
+        <StackPanel Grid.Column="1" Margin="5,5,5,5">
 
             <StackPanel Margin="5">
-                
+
                 <ListView x:Name="PreviewFolders" Margin="5">
                     <ListView.View>
                         <GridView>
@@ -82,7 +85,7 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                
+
                 <ListView x:Name="PreviewFiles" Margin="5">
                     <ListView.View>
                         <GridView>
@@ -93,8 +96,8 @@
                 </ListView>
 
             </StackPanel>
-            
+
         </StackPanel>
-        
+
     </Grid>
 </Window>
