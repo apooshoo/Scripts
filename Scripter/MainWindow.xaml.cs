@@ -29,11 +29,6 @@ namespace Scripter
             FolderSelectionComboBox.SelectedIndex = 0;
         }
 
-        private void FolderSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //debug
-        }
-
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var path = FolderPathTextBox.Text;
@@ -105,18 +100,6 @@ namespace Scripter
             }
         }
 
-        private void Trim_PreviewTextInput_ParseNumber(object sender, TextCompositionEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            e.Handled = Regex.IsMatch(e.Text, "[^0-9]") && e.Text.Length <= 2; 
-        }
-
-        private void TextBox_GotFocus_SelectAll(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            textBox.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
-        }
-
         private void FolderPathTextBox_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFolderDialog
@@ -133,6 +116,18 @@ namespace Scripter
             {
                 FolderPathTextBox.Text = result;
             }
+        }
+
+        private void Trim_PreviewTextInput_ParseNumber(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            e.Handled = Regex.IsMatch(e.Text, "[^0-9]") && e.Text.Length <= 2; 
+        }
+
+        private void TextBox_GotFocus_SelectAll(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            textBox!.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
         }
     }
 }

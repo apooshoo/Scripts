@@ -35,8 +35,7 @@
                 Text="~Please select~"
                 DisplayMemberPath="Text"
                 SelectedValuePath="Text"
-                IsEditable="true" 
-                SelectionChanged="FolderSelectionComboBox_SelectionChanged"/>
+                IsEditable="true" />
             </StackPanel>
 
             <StackPanel Margin="5">
@@ -70,6 +69,15 @@
                 <TextBox x:Name="Output" Text="Starting!" />
             </ScrollViewer>
             
+        </StackPanel>
+
+        
+        <StackPanel Grid.Column="1" Margin="5,5,5,5">
+
+            <ScrollViewer>
+                <TextBox x:Name="Preview" Text="Files!" />
+            </ScrollViewer>
+
         </StackPanel>
 
     </Grid>
