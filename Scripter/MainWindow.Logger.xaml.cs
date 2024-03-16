@@ -2,7 +2,7 @@
 
 namespace Scripter
 {
-    partial class MainWindow
+    public partial class MainWindow
     {
         private Task StartLogging(ConcurrentQueue<string> log, CancellationTokenSource cancelTokenSource)
             => Task.Run(() => WriteLogsToUiPeriodically(log, cancelTokenSource.Token), cancelTokenSource.Token);

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace Scripter
 {
-    partial class MainWindow
+    public partial class MainWindow
     {
         public List<FileSelection> _selectedFiles { get; set; } = new();
         public List<FolderSelection> _selectedFolders { get; set; } = new();

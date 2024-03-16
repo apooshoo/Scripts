@@ -12,7 +12,7 @@ public class Scripter
     {
         var path = @"";
 
-        RunForSubFolders(path);
+        //RunForSubFolders(path);
         //RunForFolder(path);
     }
 

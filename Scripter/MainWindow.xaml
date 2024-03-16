@@ -9,7 +9,7 @@
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="500*" />
             <RowDefinition Height="109*" />
         </Grid.RowDefinitions>
 
@@ -57,21 +57,20 @@
                 <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
             </StackPanel>
 
+            <StackPanel Margin="5">
+                
+                <Button Click="Button_Click" Padding="5">START</Button>
+
+                <ScrollViewer>
+                    <TextBox x:Name="Output" Padding="5" Text="Starting!" />
+                </ScrollViewer>
+                
+            </StackPanel>
+
         </StackPanel>
-
         
         
-        <StackPanel Grid.Row="1" Margin="5">
-            
-            <Button Click="Button_Click" Padding="5">START</Button>
 
-            <ScrollViewer>
-                <TextBox x:Name="Output" Padding="5" Text="Starting!" />
-            </ScrollViewer>
-            
-        </StackPanel>
-
-        
         <StackPanel Grid.Column="1" Margin="5">
 
             <StackPanel Margin="5">
