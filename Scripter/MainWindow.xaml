@@ -24,7 +24,7 @@
                 <TextBox x:Name="FolderPathTextBox"
                          Margin="5,5,0,5" Padding="5,2"  Width="200" 
                          VerticalContentAlignment="Center" 
-                         GotFocus="TextBox_GotFocus_SelectAll"/>
+                         GotFocus="TextBox_GotFocus_SelectAll" LostFocus="FolderPathTextBox_LostFocus"/>
                 <Button Margin="0,5,5,5" Padding="5,0" Click="FolderPathTextBox_Click">Select folder</Button>
             </StackPanel>
 
@@ -32,10 +32,10 @@
                 <ComboBox x:Name="FolderSelectionComboBox" 
                 Margin="5" Padding="5,2" 
                 VerticalContentAlignment="Center"
-                Text="~Please select~"
                 DisplayMemberPath="Text"
                 SelectedValuePath="Text"
-                IsEditable="true" />
+                IsEditable="false" 
+                SelectionChanged="FolderSelectionComboBox_SelectionChanged" />
             </StackPanel>
 
             <StackPanel Margin="5">
@@ -61,24 +61,41 @@
 
         
         
-        <StackPanel Grid.Row="1" Margin="5,5,5,5">
+        <StackPanel Grid.Row="1" Margin="5">
             
-            <Button Click="Button_Click">START</Button>
+            <Button Click="Button_Click" Padding="5">START</Button>
 
             <ScrollViewer>
-                <TextBox x:Name="Output" Text="Starting!" />
+                <TextBox x:Name="Output" Padding="5" Text="Starting!" />
             </ScrollViewer>
             
         </StackPanel>
 
         
-        <StackPanel Grid.Column="1" Margin="5,5,5,5">
+        <StackPanel Grid.Column="1" Margin="5">
 
-            <ScrollViewer>
-                <TextBox x:Name="Preview" Text="Files!" />
-            </ScrollViewer>
+            <StackPanel Margin="5">
+                
+                <ListView x:Name="PreviewFolders" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name" Width="400"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                
+                <ListView x:Name="PreviewFiles" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name" Width="200"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Extension}" Header="Extension" Width="200"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
 
+            </StackPanel>
+            
         </StackPanel>
-
+        
     </Grid>
 </Window>

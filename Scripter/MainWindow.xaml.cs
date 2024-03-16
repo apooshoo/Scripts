@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using Scripter.Models;
 using Scripter.Services;
-using Scripts;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -15,6 +14,9 @@ namespace Scripter
     /// </summary>
     public partial class MainWindow : Window
     {
+        public FolderSelectionOption[] _folderSelectionOptions { get; set; }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,28 +27,22 @@ namespace Scripter
 
         private void Setup()
         {
-            FolderSelectionComboBox.ItemsSource = FolderSelectionService.GetDefaultOptions();
+            _folderSelectionOptions = FolderSelectionService.GetDefaultOptions();
+            FolderSelectionComboBox.ItemsSource = _folderSelectionOptions;
             FolderSelectionComboBox.SelectedIndex = 0;
+
+            SetupCollectionSources();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var path = FolderPathTextBox.Text;
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-
-            string[] folders = FolderSelectionService.GetFoldersToProcess(
-                path, FolderSelectionComboBox.SelectedItem as FolderSelectionOption);
-
             // Start listening to messages
             ConcurrentQueue<string> log = new();
             CancellationTokenSource logListenerCancelTokenSource = new();
             Task logListenerTask = StartLogging(log, logListenerCancelTokenSource);
 
             // Start operations
-            await PerformWork(folders, log);
+            await PerformWork(log);
 
             // Stop listening to messages
             logListenerCancelTokenSource.Cancel();
@@ -59,7 +55,7 @@ namespace Scripter
             WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
         }
 
-        private Task PerformWork(string[] folders, ConcurrentQueue<string> log)
+        private Task PerformWork(ConcurrentQueue<string> log)
         {
             var trimIsChecked = TrimCheckBox.IsChecked;
             var trimLeft = TrimLeft.Text;
@@ -67,37 +63,15 @@ namespace Scripter
 
             var convertIsChecked = ConvertCheckBox.IsChecked;
 
+            string[] folders = FolderSelectionService.GetFoldersToProcess(
+                FolderPathTextBox.Text, 
+                FolderSelectionComboBox.SelectedItem as FolderSelectionOption);
+
             return Task.Run(() =>
             {
-                Trim(folders, trimIsChecked, trimLeft, trimRight, log);
-                Convert(folders, convertIsChecked, log);
+                ScriptService.Trim(folders, trimIsChecked, trimLeft, trimRight, log);
+                ScriptService.Convert(folders, convertIsChecked, log);
             });
-        }
-
-        private void Trim(string[] folders, bool? isChecked, string trimLeftStr, string trimRightStr, 
-            ConcurrentQueue<string> log)
-        {
-            if (isChecked.GetValueOrDefault() 
-                && int.TryParse(trimLeftStr, out var trimLeft) 
-                && int.TryParse(trimRightStr, out var trimRight)
-                && trimLeft + trimRight > 0)
-            {
-                foreach (var folder in folders)
-                {
-                    FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight, log);
-                }
-            }
-        }
-
-        private void Convert(string[] folders, bool? isChecked, ConcurrentQueue<string> log)
-        {
-            if (isChecked.GetValueOrDefault())
-            {
-                foreach (var folder in folders)
-                {
-                    FileConverter.ConvertWebps(folder, log);
-                }
-            }
         }
 
         private void FolderPathTextBox_Click(object sender, RoutedEventArgs e)
@@ -115,6 +89,25 @@ namespace Scripter
             if (!string.IsNullOrEmpty(result))
             {
                 FolderPathTextBox.Text = result;
+                OnFolderPathChanged();
+            }
+        }
+
+        private void FolderPathTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            OnFolderPathChanged();
+        }
+
+        private void FolderSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OnFolderPathChanged();
+        }
+
+        private void OnFolderPathChanged()
+        {
+            if (!string.IsNullOrEmpty(FolderPathTextBox.Text))
+            {
+                TryPopulateCollections(FolderPathTextBox.Text);
             }
         }
 

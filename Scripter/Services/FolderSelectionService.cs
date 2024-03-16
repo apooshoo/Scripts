@@ -1,4 +1,5 @@
-﻿using Scripter.Models;
+﻿using Microsoft.VisualBasic.FileIO;
+using Scripter.Models;
 using System.IO;
 
 namespace Scripter.Services
@@ -16,7 +17,7 @@ namespace Scripter.Services
 
         public static string[] GetFoldersToProcess(string path, FolderSelectionOption? folderSelection)
         {
-            if (folderSelection == null)
+            if (string.IsNullOrEmpty(path) || folderSelection == null)
             {
                 return Array.Empty<string>();
             }
@@ -26,7 +27,7 @@ namespace Scripter.Services
             }
             else
             {
-                return Directory.GetDirectories(path).ToArray();
+                return FolderService.GetFolderNames(path);
             }
         }
     }
