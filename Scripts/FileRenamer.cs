@@ -87,23 +87,17 @@ namespace Scripts
             return filesToProcess;
         }
 
-        public static void NormaliseFilenames(string path)
+        public static void RemoveNonNumbers(string folderPath)
         {
-            RemoveNonNumbers(path);
-            Fill(path);
-        }
-
-        private static void RemoveNonNumbers(string path)
-        {
-            var fullFileNames = FileSystem.GetFiles(path);
+            var fullFileNames = FileSystem.GetFiles(folderPath);
             var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
 
             //Remove all characters
             foreach (var file in files)
             {
                 var fileName = Path.GetFileNameWithoutExtension(file.Name);
-                var ignoredPrefix = fileName.Contains("-") ? fileName.Split("-").Last() : fileName;
-                var newFileName = Path.Combine(file.DirectoryName, Regex.Replace(ignoredPrefix, "[^0-9]", "") + file.Extension);
+                var parsedForNumbers = Regex.Replace(fileName, "[^0-9]", "");
+                var newFileName = Path.Combine(file.DirectoryName, parsedForNumbers + file.Extension);
                 if (!file.FullName.Equals(newFileName))
                 {
                     file.MoveTo(newFileName);
@@ -111,10 +105,10 @@ namespace Scripts
             }
         }
 
-        private static void Fill(string path)
+        public static void Fill(string folderPath)
         {
             //Fill
-            var fullFileNames = FileSystem.GetFiles(path);
+            var fullFileNames = FileSystem.GetFiles(folderPath);
             var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
             var maxLength = files.Any() ? files.Max(f => Path.GetFileNameWithoutExtension(f.Name).Length) : 0;
             foreach (var file in files)

@@ -5,11 +5,10 @@ namespace Scripter.Services
 {
     public static class ScriptService
     {
-        public static void Trim(string[] folders, bool? isChecked, string trimLeftStr, string trimRightStr,
+        public static void Trim(string[] folders, string trimLeftStr, string trimRightStr,
             ConcurrentQueue<string> log)
         {
-            if (isChecked.GetValueOrDefault()
-                && int.TryParse(trimLeftStr, out var trimLeft)
+            if (int.TryParse(trimLeftStr, out var trimLeft)
                 && int.TryParse(trimRightStr, out var trimRight)
                 && trimLeft + trimRight > 0)
             {
@@ -20,14 +19,20 @@ namespace Scripter.Services
             }
         }
 
-        public static void Convert(string[] folders, bool? isChecked, ConcurrentQueue<string> log)
+        public static void Normalise(string[] folders)
         {
-            if (isChecked.GetValueOrDefault())
+            foreach (var folder in folders)
             {
-                foreach (var folder in folders)
-                {
-                    FileConverter.ConvertWebps(folder, log);
-                }
+                FileRenamer.RemoveNonNumbers(folder);
+                FileRenamer.Fill(folder);
+            }
+        }
+
+        public static void Convert(string[] folders, ConcurrentQueue<string> log)
+        {
+            foreach (var folder in folders)
+            {
+                FileConverter.ConvertWebps(folder, log);
             }
         }
     }

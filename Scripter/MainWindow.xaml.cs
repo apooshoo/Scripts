@@ -22,7 +22,6 @@ namespace Scripter
             InitializeComponent();
             Setup();
             DataContext = this;
-            WriteLogToUi("Initialised.");
         }
 
         private void Setup()
@@ -36,6 +35,8 @@ namespace Scripter
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            WriteLogToUi("Starting...");
+
             // Start listening to messages
             ConcurrentQueue<string> log = new();
             CancellationTokenSource logListenerCancelTokenSource = new();
@@ -57,20 +58,22 @@ namespace Scripter
 
         private Task PerformWork(ConcurrentQueue<string> log)
         {
-            var trimIsChecked = TrimCheckBox.IsChecked;
+            var shouldTrim = TrimCheckBox.IsChecked.GetValueOrDefault();
             var trimLeft = TrimLeft.Text;
             var trimRight = TrimRight.Text; 
 
-            var convertIsChecked = ConvertCheckBox.IsChecked;
+            var shouldNormalise = NormaliseCheckBox.IsChecked.GetValueOrDefault();
 
-            string[] folders = FolderSelectionService.GetFoldersToProcess(
-                FolderPathTextBox.Text, 
-                FolderSelectionComboBox.SelectedItem as FolderSelectionOption);
+            var shouldConvert = ConvertCheckBox.IsChecked.GetValueOrDefault();
+
+            var folders = FolderSelectionService.GetFoldersToProcess(FolderPathTextBox.Text, 
+                (FolderSelectionOption)FolderSelectionComboBox.SelectedItem);
 
             return Task.Run(() =>
             {
-                ScriptService.Trim(folders, trimIsChecked, trimLeft, trimRight, log);
-                ScriptService.Convert(folders, convertIsChecked, log);
+                if (shouldTrim) ScriptService.Trim(folders, trimLeft, trimRight, log);
+                if (shouldNormalise) ScriptService.Normalise(folders);
+                if (shouldConvert) ScriptService.Convert(folders, log);
             });
         }
 

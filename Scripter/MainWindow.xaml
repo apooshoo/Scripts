@@ -52,7 +52,11 @@
                     <TextBox x:Name="TrimRight" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
                 </StackPanel>
             </StackPanel>
-
+            
+            <StackPanel Margin="5">
+                <CheckBox x:Name="NormaliseCheckBox" Content="Normalise file names" Margin="5" />
+            </StackPanel>
+            
             <StackPanel Margin="5">
                 <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
             </StackPanel>
@@ -65,8 +69,7 @@
                          VerticalScrollBarVisibility="Visible" 
                          Height="150"
                          MaxLength="50"
-                         TextWrapping="NoWrap"
-                         Text="Test" />
+                         TextWrapping="NoWrap" />
 
             </StackPanel>
 
@@ -74,7 +77,7 @@
 
 
 
-        <StackPanel Grid.Column="1" Margin="5,5,5,5">
+        <StackPanel Grid.Column="1" Margin="5">
 
             <StackPanel Margin="5">
 
