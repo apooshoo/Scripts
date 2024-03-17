@@ -9,7 +9,7 @@
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="500*" />
+            <RowDefinition Height="1200*" />
             <RowDefinition Height="109*" />
         </Grid.RowDefinitions>
 
@@ -67,7 +67,7 @@
 
                 <TextBox x:Name="Output" Padding="5" 
                          VerticalScrollBarVisibility="Visible" 
-                         Height="150"
+                         Height="140"
                          MaxLength="50"
                          TextWrapping="NoWrap" />
 
