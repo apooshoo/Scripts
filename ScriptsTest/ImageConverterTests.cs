@@ -1,36 +1,35 @@
 using Common;
 using Scripts;
+using System.Reflection;
 
 namespace ScriptsTest
 {
     [TestClass]
-    public class ImageConverterTests
+    public class ImageConverterTests : TestBase
     {
-        const string testFolder = @"C:\Users\jonat\OneDrive\Desktop\test\TestWebp\";
-        const string outputFolder = @"C:\Users\jonat\OneDrive\Desktop\test\Output\";
-
-        private ImageConverter _model;
+        const string WebpTestFolder = "WebpTestFiles";
 
         [TestInitialize]
         public void Init()
         {
-            _model = new ImageConverter();
-            CleanUpFolder(outputFolder);
+            CleanUpFolder(TestOutputFolder);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            CleanUpFolder(outputFolder);
+            CleanUpFolder(TestOutputFolder);
         }
 
         [TestMethod]
         public void ConvertTest()
         {
-            _model.Convert(testFolder, outputFolder);
+            var webpTestFolder = Path.Combine(TestBaseFolder, WebpTestFolder);
 
-            var input = FileService.GetFiles(testFolder);
-            var output = FileService.GetFiles(outputFolder);
+            ImageConverter.Convert(webpTestFolder, TestOutputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
+
+            var input = FileService.GetFiles(webpTestFolder);
+            var output = FileService.GetFiles(TestOutputFolder);
             Assert.AreEqual(input.Count(), output.Count());
             Assert.IsTrue(output.All(x => x.Extension.Equals(".jpeg")));
         }
@@ -38,28 +37,16 @@ namespace ScriptsTest
         [TestMethod]
         public void ConvertToSameFolderTest()
         {
-            _model.Convert(testFolder, outputFolder);
+            var webpTestFolder = Path.Combine(TestBaseFolder, WebpTestFolder);
 
-            _model.Convert(outputFolder, outputFolder, ImageFormat.JPEG, ImageFormat.PNG);
+            ImageConverter.Convert(webpTestFolder, TestOutputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
 
-            var input = FileService.GetFiles(testFolder);
-            var output = FileService.GetFiles(outputFolder);
+            ImageConverter.Convert(TestOutputFolder, TestOutputFolder, ImageFormat.JPEG, ImageFormat.PNG);
+
+            var input = FileService.GetFiles(webpTestFolder);
+            var output = FileService.GetFiles(TestOutputFolder);
             Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".jpeg")).Count());
             Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".png")).Count());
-        }
-
-        private static void CleanUpFolder(string path)
-        {
-            System.IO.DirectoryInfo di = new DirectoryInfo(path);
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
-            }
         }
     }
 }

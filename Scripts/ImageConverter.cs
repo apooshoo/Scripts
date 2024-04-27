@@ -2,14 +2,14 @@
 
 namespace Scripts
 {
-    public class ImageConverter
+    public static class ImageConverter
     {
-        public void Convert(string inputFolder, string outputFolder)
+        public static void Convert(string inputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
-            Convert(inputFolder, outputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
+            Convert(inputFolder, outputFolder: inputFolder, formatIn, formatOut);
         }
 
-        public void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
+        public static void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
             var imageExtensionName = formatIn.ToString().ToLowerInvariant();
             var files = FileService.GetFiles(inputFolder, imageExtensionName);
@@ -21,11 +21,11 @@ namespace Scripts
                     switch (formatOut)
                     {
                         case ImageFormat.JPEG:
-                            var jpeg = Path.ChangeExtension(outputFolder + file.Name, "jpeg");
+                            var jpeg = Path.ChangeExtension(Path.Combine(outputFolder, file.Name), "jpeg");
                             img.Save(jpeg, new Aspose.Imaging.ImageOptions.JpegOptions());
                             break;
                         case ImageFormat.PNG:
-                            var png = Path.ChangeExtension(outputFolder + file.Name, "png");
+                            var png = Path.ChangeExtension(Path.Combine(outputFolder, file.Name), "png");
                             img.Save(png, new Aspose.Imaging.ImageOptions.PngOptions());
                             break;
                         default:
