@@ -53,5 +53,14 @@ namespace ScriptsTest
                 dir.Delete(true);
             }
         }
+
+        public static void CopyFolderContents(string from, string to)
+        {
+            var dir = new DirectoryInfo(from);
+            foreach (var file in dir.GetFiles())
+            {
+                file.CopyTo(Path.Combine(to, file.Name));
+            }
+        }
     }
 }

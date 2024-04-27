@@ -4,6 +4,11 @@ namespace Scripts
 {
     public static class ImageConverter
     {
+        public static void Convert(string inputFolder, ImageFormat formatIn, ImageFormat formatOut)
+        {
+            Convert(inputFolder, inputFolder, formatIn, formatOut);
+        }
+
         public static void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
             var tasks = GetConvertTasks(inputFolder, outputFolder, formatIn, formatOut);
@@ -33,6 +38,7 @@ namespace Scripts
                 newFullName = Path.ChangeExtension(newFullName, formatOut.ToString().ToLower());
                 Convert(img, newFullName, formatOut);
             }
+            file.Delete();
         }
 
         private static void Convert(Aspose.Imaging.Image img, string fullName, ImageFormat formatOut)

@@ -26,27 +26,14 @@ namespace ScriptsTest
         {
             var webpTestFolder = Path.Combine(TestBaseFolder, WebpTestFolder);
 
-            ImageConverter.Convert(webpTestFolder, TestOutputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
+            CopyFolderContents(webpTestFolder,  TestOutputFolder);
+
+            ImageConverter.Convert(TestOutputFolder, TestOutputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
 
             var input = FileService.GetFiles(webpTestFolder);
             var output = FileService.GetFiles(TestOutputFolder);
             Assert.AreEqual(input.Count(), output.Count());
             Assert.IsTrue(output.All(x => x.Extension.Equals(".jpeg")));
-        }
-
-        [TestMethod]
-        public void ConvertToSameFolderTest()
-        {
-            var webpTestFolder = Path.Combine(TestBaseFolder, WebpTestFolder);
-
-            ImageConverter.Convert(webpTestFolder, TestOutputFolder, ImageFormat.WEBP, ImageFormat.JPEG);
-
-            ImageConverter.Convert(TestOutputFolder, TestOutputFolder, ImageFormat.JPEG, ImageFormat.PNG);
-
-            var input = FileService.GetFiles(webpTestFolder);
-            var output = FileService.GetFiles(TestOutputFolder);
-            Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".jpeg")).Count());
-            Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".png")).Count());
         }
     }
 }
