@@ -18,20 +18,25 @@ namespace Scripts
             {
                 using (var img = Aspose.Imaging.Image.Load(file.FullName))
                 {
-                    switch (formatOut)
-                    {
-                        case ImageFormat.JPEG:
-                            var jpeg = Path.ChangeExtension(Path.Combine(outputFolder, file.Name), "jpeg");
-                            img.Save(jpeg, new Aspose.Imaging.ImageOptions.JpegOptions());
-                            break;
-                        case ImageFormat.PNG:
-                            var png = Path.ChangeExtension(Path.Combine(outputFolder, file.Name), "png");
-                            img.Save(png, new Aspose.Imaging.ImageOptions.PngOptions());
-                            break;
-                        default:
-                            throw new ArgumentException(nameof(formatOut));
-                    }
+                    var newFullName = Path.Combine(outputFolder, file.Name);
+                    newFullName = Path.ChangeExtension(newFullName, formatOut.ToString().ToLower());
+                    Convert(img, newFullName, formatOut);
                 }
+            }
+        }
+
+        private static void Convert(Aspose.Imaging.Image img, string fullName, ImageFormat formatOut)
+        {
+            switch (formatOut)
+            {
+                case ImageFormat.JPEG:
+                    img.Save(fullName, new Aspose.Imaging.ImageOptions.JpegOptions());
+                    break;
+                case ImageFormat.PNG:
+                    img.Save(fullName, new Aspose.Imaging.ImageOptions.PngOptions());
+                    break;
+                default:
+                    throw new ArgumentException(nameof(formatOut));
             }
         }
     }
