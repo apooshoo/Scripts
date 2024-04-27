@@ -24,6 +24,30 @@ namespace ScriptsTest
             CleanUpFolder(outputFolder);
         }
 
+        [TestMethod]
+        public void ConvertTest()
+        {
+            _model.Convert(testFolder, outputFolder);
+
+            var input = FileService.GetFiles(testFolder);
+            var output = FileService.GetFiles(outputFolder);
+            Assert.AreEqual(input.Count(), output.Count());
+            Assert.IsTrue(output.All(x => x.Extension.Equals(".jpeg")));
+        }
+
+        [TestMethod]
+        public void ConvertToSameFolderTest()
+        {
+            _model.Convert(testFolder, outputFolder);
+
+            _model.Convert(outputFolder, outputFolder, ImageFormat.JPEG, ImageFormat.PNG);
+
+            var input = FileService.GetFiles(testFolder);
+            var output = FileService.GetFiles(outputFolder);
+            Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".jpeg")).Count());
+            Assert.AreEqual(input.Count(), output.Where(x => x.Extension.Equals(".png")).Count());
+        }
+
         private static void CleanUpFolder(string path)
         {
             System.IO.DirectoryInfo di = new DirectoryInfo(path);
@@ -36,17 +60,6 @@ namespace ScriptsTest
             {
                 dir.Delete(true);
             }
-        }
-
-        [TestMethod]
-        public void RunTest()
-        {
-            _model.Convert(testFolder, outputFolder);
-
-            var input = FileService.GetFiles(testFolder);
-            var output = FileService.GetFiles(outputFolder);
-            Assert.AreEqual(input.Count(), output.Count());
-            Assert.IsTrue(output.All(x => x.Extension.Equals(".jpeg")));
         }
     }
 }

@@ -18,14 +18,18 @@ namespace Scripts
             {
                 using (var img = Aspose.Imaging.Image.Load(file.FullName))
                 {
-                    if (formatOut == ImageFormat.JPEG)
+                    switch (formatOut)
                     {
-                        var output = Path.ChangeExtension(outputFolder + file.Name, "jpeg");
-                        img.Save(output, new Aspose.Imaging.ImageOptions.JpegOptions());
-                    }
-                    else
-                    {
-                        throw new Exception();
+                        case ImageFormat.JPEG:
+                            var jpeg = Path.ChangeExtension(outputFolder + file.Name, "jpeg");
+                            img.Save(jpeg, new Aspose.Imaging.ImageOptions.JpegOptions());
+                            break;
+                        case ImageFormat.PNG:
+                            var png = Path.ChangeExtension(outputFolder + file.Name, "png");
+                            img.Save(png, new Aspose.Imaging.ImageOptions.PngOptions());
+                            break;
+                        default:
+                            throw new ArgumentException(nameof(formatOut));
                     }
                 }
             }
@@ -35,6 +39,7 @@ namespace Scripts
     public enum ImageFormat
     {
         WEBP,
-        JPEG
+        JPEG, 
+        PNG
     }
 }
