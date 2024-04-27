@@ -4,24 +4,34 @@ namespace Scripts
 {
     public static class ImageConverter
     {
-        public static void Convert(string inputFolder, ImageFormat formatIn, ImageFormat formatOut)
+        public static void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
-            Convert(inputFolder, outputFolder: inputFolder, formatIn, formatOut);
+            var tasks = GetConvertTasks(inputFolder, outputFolder, formatIn, formatOut);
+
+            foreach (var task in tasks)
+            {
+                task.Invoke();
+            }
         }
 
-        public static void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
+        public static IEnumerable<Action> GetConvertTasks(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
             var imageExtensionName = formatIn.ToString().ToLowerInvariant();
             var files = FileService.GetFiles(inputFolder, imageExtensionName);
 
             foreach (var file in files)
             {
-                using (var img = Aspose.Imaging.Image.Load(file.FullName))
-                {
-                    var newFullName = Path.Combine(outputFolder, file.Name);
-                    newFullName = Path.ChangeExtension(newFullName, formatOut.ToString().ToLower());
-                    Convert(img, newFullName, formatOut);
-                }
+                yield return () => Convert(file, outputFolder, formatOut);
+            }
+        }
+
+        private static void Convert(FileInfo file, string outputFolder, ImageFormat formatOut)
+        {
+            using (var img = Aspose.Imaging.Image.Load(file.FullName))
+            {
+                var newFullName = Path.Combine(outputFolder, file.Name);
+                newFullName = Path.ChangeExtension(newFullName, formatOut.ToString().ToLower());
+                Convert(img, newFullName, formatOut);
             }
         }
 
