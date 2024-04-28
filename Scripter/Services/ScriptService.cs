@@ -1,4 +1,5 @@
-﻿using Scripts;
+﻿using Common;
+using Scripts;
 using System.Collections.Concurrent;
 
 namespace Scripter.Services
@@ -32,7 +33,7 @@ namespace Scripter.Services
         {
             foreach (var folder in folders)
             {
-                FileConverter.ConvertWebps(folder, log);
+                ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG);
             }
         }
     }

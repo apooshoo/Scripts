@@ -56,11 +56,4 @@ namespace Scripts
             }
         }
     }
-
-    public enum ImageFormat
-    {
-        WEBP,
-        JPEG, 
-        PNG
-    }
 }
