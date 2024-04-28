@@ -14,23 +14,17 @@ namespace Scripter
     /// </summary>
     public partial class MainWindow : Window
     {
-        public FolderSelectionOption[] _folderSelectionOptions { get; set; }
-
-
         public MainWindow()
         {
             InitializeComponent();
-            Setup();
+            Initialise();
             DataContext = this;
         }
 
-        private void Setup()
+        private void Initialise()
         {
-            _folderSelectionOptions = FolderSelectionService.GetDefaultOptions();
-            FolderSelectionComboBox.ItemsSource = _folderSelectionOptions;
-            FolderSelectionComboBox.SelectedIndex = 0;
-
-            SetupCollectionSources();
+            InitialisePreviewOptions();
+            InitialisePreviewSources();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -110,7 +104,7 @@ namespace Scripter
         {
             if (!string.IsNullOrEmpty(FolderPathTextBox.Text))
             {
-                TryPopulateCollections(FolderPathTextBox.Text);
+                TryPopulatePreviews(FolderPathTextBox.Text);
             }
         }
 

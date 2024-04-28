@@ -7,10 +7,18 @@ namespace Scripter
 {
     public partial class MainWindow
     {
+        public FolderSelectionOption[] _folderSelectionOptions { get; set; }
         public List<FileSelection> _selectedFiles { get; set; } = new();
         public List<FolderSelection> _selectedFolders { get; set; } = new();
 
-        private void SetupCollectionSources()
+        private void InitialisePreviewOptions()
+        {
+            _folderSelectionOptions = FolderSelectionService.GetDefaultOptions();
+            FolderSelectionComboBox.ItemsSource = _folderSelectionOptions;
+            FolderSelectionComboBox.SelectedIndex = 0;
+        }
+
+        private void InitialisePreviewSources()
         {
             PreviewFiles.ItemsSource = _selectedFiles;
             PreviewFiles.Visibility = Visibility.Collapsed;
@@ -19,17 +27,17 @@ namespace Scripter
             PreviewFolders.Visibility = Visibility.Collapsed;
         }
 
-        private void TryPopulateCollections(string folderPath)
+        private void TryPopulatePreviews(string folderPath)
         {
-            ClearCollections();
+            ClearPreviews();
 
-            TryPopulateCollections(folderPath, (FolderSelectionOption)FolderSelectionComboBox.SelectedItem);
+            TryPopulatePreviews(folderPath, (FolderSelectionOption)FolderSelectionComboBox.SelectedItem);
 
-            OnCollectionChanged(PreviewFiles);
-            OnCollectionChanged(PreviewFolders);
+            OnPreviewChanged(PreviewFiles);
+            OnPreviewChanged(PreviewFolders);
         }
 
-        private void TryPopulateCollections(string folderPath, FolderSelectionOption folderSelectionOption)
+        private void TryPopulatePreviews(string folderPath, FolderSelectionOption folderSelectionOption)
         {
             switch (folderSelectionOption.Enum)
             {
@@ -48,13 +56,13 @@ namespace Scripter
             }
         }
 
-        private void OnCollectionChanged(ListView listView)
+        private void OnPreviewChanged(ListView listView)
         {
             listView.Items.Refresh();
             listView.Visibility = listView.HasItems ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void ClearCollections()
+        private void ClearPreviews()
         {
             _selectedFiles.Clear();
             _selectedFolders.Clear();
