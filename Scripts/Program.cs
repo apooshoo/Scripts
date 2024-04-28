@@ -1,12 +1,9 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using Scripts;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 
-var scripter = new Scripter();
+var scripter = new ScriptRunner();
 scripter.Run();
 
-public class Scripter
+public class ScriptRunner
 {
     public void Run()
     {
