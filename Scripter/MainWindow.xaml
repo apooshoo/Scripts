@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scripter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="464" Width="800">
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="1200*" />
-            <RowDefinition Height="109*" />
+            <RowDefinition Height="0*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -63,14 +63,16 @@
 
             <StackPanel Margin="5">
 
-                <Button Click="Button_Click" Padding="5">START</Button>
+                    <Button Click="Start_Click"  Padding="5">START</Button>
 
-                <TextBox x:Name="Output" Padding="5" 
+                    <TextBox x:Name="Output" Padding="5" 
                          VerticalScrollBarVisibility="Visible" 
                          Height="140"
                          MaxLength="50"
                          TextWrapping="NoWrap" />
 
+                    <Button Click="Clear_Click"  Padding="5">Clear</Button>
+                        
             </StackPanel>
 
         </StackPanel>

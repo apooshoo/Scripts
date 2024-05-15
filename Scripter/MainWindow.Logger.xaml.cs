@@ -46,5 +46,13 @@ namespace Scripter
                 Output.AppendText(Environment.NewLine);
             }));
         }
+
+        private void ClearLog()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Output.Clear();
+            }));
+        }
     }
 }

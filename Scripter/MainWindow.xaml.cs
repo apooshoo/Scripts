@@ -27,7 +27,7 @@ namespace Scripter
             InitialisePreviewSources();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Start_Click(object sender, RoutedEventArgs e)
         {
             WriteLogToUi("Starting...");
 
@@ -118,6 +118,11 @@ namespace Scripter
         {
             var textBox = sender as TextBox;
             textBox!.Dispatcher.BeginInvoke(new Action(() => textBox.SelectAll()));
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            ClearLog();
         }
     }
 }
