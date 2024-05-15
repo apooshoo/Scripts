@@ -48,6 +48,7 @@ namespace Scripter
             Thread.Sleep(200);
             WriteRemainingLogs(log);
             WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
+            OnFolderPathChanged();
         }
 
         private Task PerformWork(ConcurrentQueue<string> log)
