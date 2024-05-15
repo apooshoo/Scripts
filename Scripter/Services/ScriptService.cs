@@ -33,7 +33,8 @@ namespace Scripter.Services
         {
             foreach (var folder in folders)
             {
-                ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG);
+                FileConverter.ConvertWebps(folder, log);
+                //ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG); // has watermark
             }
         }
     }
