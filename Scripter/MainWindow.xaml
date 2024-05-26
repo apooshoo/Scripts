@@ -8,6 +8,7 @@
         Title="MainWindow" Height="464" Width="800">
     <Grid Margin="10">
 
+        <!--#region Grid Definitions -->
         <Grid.RowDefinitions>
             <RowDefinition Height="1200*" />
             <RowDefinition Height="0*" />
@@ -17,9 +18,11 @@
             <ColumnDefinition Width="320"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <!--#endregion-->
 
         <StackPanel Margin="5" Orientation="Vertical">
 
+            <!--#region FolderPathTextBox -->
             <StackPanel Margin="5" Orientation="Horizontal">
                 <TextBox x:Name="FolderPathTextBox"
                          Margin="5,5,0,5" Padding="5,2"  Width="200" 
@@ -27,7 +30,9 @@
                          GotFocus="TextBox_GotFocus_SelectAll" LostFocus="FolderPathTextBox_LostFocus"/>
                 <Button Margin="0,5,5,5" Padding="5,0" Click="FolderPathTextBox_Click">Select folder</Button>
             </StackPanel>
+            <!--#endregion-->
 
+            <!--#region FolderSelectionComboBox -->
             <StackPanel Margin="5">
                 <ComboBox x:Name="FolderSelectionComboBox" 
                 Margin="5" Padding="5,2" 
@@ -37,7 +42,9 @@
                 IsEditable="false" 
                 SelectionChanged="FolderSelectionComboBox_SelectionChanged" />
             </StackPanel>
+            <!--#endregion-->
 
+            <!--#region TrimCheckBox -->
             <StackPanel Margin="5">
                 <StackPanel.Resources>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -52,26 +59,33 @@
                     <TextBox x:Name="TrimRight" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
                 </StackPanel>
             </StackPanel>
-            
+            <!--#endregion-->
+
+            <!--#region NormaliseCheckBox -->
             <StackPanel Margin="5">
                 <CheckBox x:Name="NormaliseCheckBox" Content="Normalise file names" Margin="5" />
             </StackPanel>
-            
+            <!--#endregion-->
+
+            <!--#region ConvertCheckBox -->
             <StackPanel Margin="5">
                 <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
             </StackPanel>
+            <!--#endregion-->
 
             <StackPanel Margin="5">
 
-                    <Button Click="Start_Click"  Padding="5">START</Button>
+                <Button Click="Start_Click"  Padding="5">START</Button>
 
-                    <TextBox x:Name="Output" Padding="5" 
+                <!--#region Output -->
+                <TextBox x:Name="Output" Padding="5" 
                          VerticalScrollBarVisibility="Visible" 
                          Height="140"
                          MaxLength="50"
                          TextWrapping="NoWrap" />
+                <!--#endregion-->
 
-                    <Button Click="Clear_Click"  Padding="5">Clear</Button>
+                <Button Click="Clear_Click"  Padding="5">Clear</Button>
                         
             </StackPanel>
 
