@@ -7,18 +7,17 @@ namespace Scripter
 {
     public partial class MainWindow
     {
-        public FolderSelectionOption[] _folderSelectionOptions { get; set; }
+        public FolderSelectionOption[] _folderSelectionOptions { get; private set; } = FolderSelectionService.DefaultOptions;
         public List<FileSelection> _selectedFiles { get; set; } = new();
         public List<FolderSelection> _selectedFolders { get; set; } = new();
 
-        private void InitialisePreviewOptions()
+        private void InitialiseFolderSelectionOptions()
         {
-            _folderSelectionOptions = FolderSelectionService.GetDefaultOptions();
             FolderSelectionComboBox.ItemsSource = _folderSelectionOptions;
             FolderSelectionComboBox.SelectedIndex = 0;
         }
 
-        private void InitialisePreviewSources()
+        private void InitialisePreviewDataSources()
         {
             PreviewFiles.ItemsSource = _selectedFiles;
             PreviewFiles.Visibility = Visibility.Collapsed;

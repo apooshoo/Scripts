@@ -17,14 +17,9 @@ namespace Scripter
         public MainWindow()
         {
             InitializeComponent();
-            Initialise();
+            InitialiseFolderSelectionOptions();
+            InitialisePreviewDataSources();
             DataContext = this;
-        }
-
-        private void Initialise()
-        {
-            InitialisePreviewOptions();
-            InitialisePreviewSources();
         }
 
         private async void Start_Click(object sender, RoutedEventArgs e)
@@ -70,43 +65,6 @@ namespace Scripter
                 if (shouldNormalise) ScriptService.Normalise(folders);
                 if (shouldConvert) ScriptService.Convert(folders, log);
             });
-        }
-
-        private void FolderPathTextBox_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new OpenFolderDialog
-            {
-                Title = "Select folder",
-                InitialDirectory = "C:\\Users\\jonat\\Downloads",
-                //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                Multiselect = false,
-            };
-
-            dialog.ShowDialog();
-            var result = dialog.FolderNames.FirstOrDefault();
-            if (!string.IsNullOrEmpty(result))
-            {
-                FolderPathTextBox.Text = result;
-                OnFolderPathChanged();
-            }
-        }
-
-        private void FolderPathTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            OnFolderPathChanged();
-        }
-
-        private void FolderSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            OnFolderPathChanged();
-        }
-
-        private void OnFolderPathChanged()
-        {
-            if (!string.IsNullOrEmpty(FolderPathTextBox.Text))
-            {
-                TryPopulatePreviews(FolderPathTextBox.Text);
-            }
         }
 
         private void Trim_PreviewTextInput_ParseNumber(object sender, TextCompositionEventArgs e)

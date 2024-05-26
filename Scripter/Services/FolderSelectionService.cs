@@ -1,19 +1,14 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using Scripter.Models;
-using System.IO;
+﻿using Scripter.Models;
 
 namespace Scripter.Services
 {
     public static class FolderSelectionService
     {
-        public static FolderSelectionOption[] GetDefaultOptions()
+        public static readonly FolderSelectionOption[] DefaultOptions = 
         {
-            return
-            [
-                new FolderSelectionOption(FolderSelectionEnum.Folder, "Selected folder"),
-                new FolderSelectionOption(FolderSelectionEnum.SubFolders, "Subfolders of selected folder"),
-            ];
-        }
+            new FolderSelectionOption(FolderSelectionEnum.Folder, "Selected folder"),
+            new FolderSelectionOption(FolderSelectionEnum.SubFolders, "Subfolders of selected folder")
+        };
 
         public static string[] GetFoldersToProcess(string path, FolderSelectionOption? folderSelection)
         {
