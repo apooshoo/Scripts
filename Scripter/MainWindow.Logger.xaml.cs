@@ -6,14 +6,14 @@ namespace Scripter
     {
         private Task StartLogging(ConcurrentQueue<string> log, CancellationTokenSource cancelTokenSource)
             => Task.Run(() => WriteLogsToUiPeriodically(log, cancelTokenSource.Token), cancelTokenSource.Token);
-        
 
-        private int _whileLoopCountTest = 0;
+        private DateTime _startTime;
+
         private void WriteLogsToUiPeriodically(ConcurrentQueue<string> log, CancellationToken token)
         {
+            _startTime = DateTime.Now;
             while (!token.IsCancellationRequested)
             {
-                _whileLoopCountTest++;
                 TryWriteLogToUI(log);
                 Thread.Sleep(100);
             }
@@ -36,6 +36,8 @@ namespace Scripter
             {
                 TryWriteLogToUI(log);
             }
+            WriteLogToUi("Operation complete. " +
+                "Time elapsed: " + (DateTime.Now - _startTime).TotalSeconds + " seconds.");
         }
 
         private void WriteLogToUi(string message)

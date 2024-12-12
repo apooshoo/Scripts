@@ -42,7 +42,6 @@ namespace Scripter
             // Wrap up - clear messages if any (there should be none)
             Thread.Sleep(200);
             WriteRemainingLogs(log);
-            WriteLogToUi("Operation complete. Test count: " + _whileLoopCountTest);
             OnFolderPathChanged();
         }
 
