@@ -5,13 +5,16 @@ namespace Scripts
 {
     public static class FileConverter
     {
-        const string cmd1 = "magick mogrify -format jpeg *.webp";
-        const string cmd2 = "del *.webp";
+        const string exePath = @"C:\Users\jonat\Downloads\New folder\ImageMagick-7.1.1-43-portable-Q16-x64\ImageMagick-7.1.1-43-portable-Q16-x64\magick.exe";
+        const string exeCmd = "mogrify -format jpeg *.webp";
 
         public static void ConvertWebps(string folderPath, IProducerConsumerCollection<string> log)
         {
             try
             {
+                string cmd1 = $"&'{exePath}' {exeCmd}";
+                string cmd2 = "del *.webp";
+
                 if (NeedsConverting(folderPath))
                 {
                     log.TryAdd("Converting: " + folderPath);
