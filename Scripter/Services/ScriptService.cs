@@ -29,12 +29,20 @@ namespace Scripter.Services
             }
         }
 
-        public static void Convert(string[] folders, ConcurrentQueue<string> log)
+        public static void Convert(string[] folders, IProducerConsumerCollection<string> log)
         {
             foreach (var folder in folders)
             {
-                FileConverter.ConvertWebps(folder, log);
-                //ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG); // has watermark
+                try
+                {
+                    log.TryAdd("Converting: " + folder);
+                    ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG);
+                    log.TryAdd("Done converting.");
+                }
+                catch (Exception e)
+                {
+                    log.TryAdd($"Error while converting for: {folder} : {e.Message}");
+                }
             }
         }
     }

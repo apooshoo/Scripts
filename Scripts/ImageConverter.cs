@@ -1,4 +1,5 @@
 ﻿using Common;
+using ImageMagick;
 
 namespace Scripts
 {
@@ -11,7 +12,7 @@ namespace Scripts
 
         public static void Convert(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
-            var tasks = GetConvertTasks(inputFolder, outputFolder, formatIn, formatOut);
+            var tasks = CreateConvertTasks(inputFolder, outputFolder, formatIn, formatOut);
 
             foreach (var task in tasks)
             {
@@ -19,41 +20,23 @@ namespace Scripts
             }
         }
 
-        public static IEnumerable<Action> GetConvertTasks(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
+        public static IEnumerable<Action> CreateConvertTasks(string inputFolder, string outputFolder, ImageFormat formatIn, ImageFormat formatOut)
         {
-            var imageExtensionName = formatIn.ToString().ToLowerInvariant();
-            var files = FileService.GetFiles(inputFolder, imageExtensionName);
+            var extensionIn = formatIn.ToString().ToLowerInvariant();
+            var extensionOut = formatOut.ToString().ToLowerInvariant();
+            var files = FileService.GetFiles(inputFolder, extensionIn);
 
             foreach (var file in files)
             {
-                yield return () => Convert(file, outputFolder, formatOut);
+                yield return () => Convert(file, outputFolder, extensionIn, extensionOut);
             }
         }
 
-        private static void Convert(FileInfo file, string outputFolder, ImageFormat formatOut)
+        private static void Convert(FileInfo file, string outputFolder, string extensionIn, string extensionOut)
         {
-            using (var img = Aspose.Imaging.Image.Load(file.FullName))
-            {
-                var newFullName = Path.Combine(outputFolder, file.Name);
-                newFullName = Path.ChangeExtension(newFullName, formatOut.ToString().ToLower());
-                Convert(img, newFullName, formatOut);
-            }
+            using var image = new MagickImage(file);
+            image.Write(file.FullName.Replace(extensionIn, extensionOut));
             file.Delete();
-        }
-
-        private static void Convert(Aspose.Imaging.Image img, string fullName, ImageFormat formatOut)
-        {
-            switch (formatOut)
-            {
-                case ImageFormat.JPEG:
-                    img.Save(fullName, new Aspose.Imaging.ImageOptions.JpegOptions());
-                    break;
-                case ImageFormat.PNG:
-                    img.Save(fullName, new Aspose.Imaging.ImageOptions.PngOptions());
-                    break;
-                default:
-                    throw new ArgumentException(nameof(formatOut));
-            }
         }
     }
 }
