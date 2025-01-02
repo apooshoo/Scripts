@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scripter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="464" Width="800">
+        Title="MainWindow" Height="485" Width="800">
     <Grid Margin="10">
 
         <!--#region Grid Definitions -->
@@ -67,12 +67,26 @@
             </StackPanel>
             <!--#endregion-->
 
+            <!--#region ReseedCheckBox -->
+            <StackPanel Margin="5">
+                <StackPanel.Resources>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                </StackPanel.Resources>
+                <CheckBox x:Name="ReseedCheckBox" Content="Reseed file names" Margin="5" />
+                <StackPanel Margin="5" Orientation="Horizontal"
+                    Visibility="{Binding ElementName=ReseedCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label>Seed:</Label>
+                    <TextBox x:Name="ReseedValue" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
+                </StackPanel>
+            </StackPanel>
+            <!--#endregion-->
+
             <!--#region ConvertCheckBox -->
             <StackPanel Margin="5">
                 <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
             </StackPanel>
             <!--#endregion-->
-
+            
             <StackPanel Margin="5">
 
                 <Button Click="Start_Click"  Padding="5">START</Button>

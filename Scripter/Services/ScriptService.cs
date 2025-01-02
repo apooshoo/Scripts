@@ -29,6 +29,17 @@ namespace Scripter.Services
             }
         }
 
+        public static void Reseed(string[] folders, string reseedValueStr)
+        {
+            if (int.TryParse(reseedValueStr, out var reseedValue) && reseedValue >= 0)
+            {
+                foreach (var folder in folders)
+                {
+                    FileRenamer.ReseedFiles(folder, reseedValue);
+                }
+            }
+        }
+
         public static void Convert(string[] folders, IProducerConsumerCollection<string> log)
         {
             foreach (var folder in folders)

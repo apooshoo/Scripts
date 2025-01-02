@@ -1,17 +1,17 @@
-﻿using System.Collections.Concurrent;
+﻿using Common;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
-using Microsoft.VisualBasic.FileIO;
 
 namespace Scripts
 {
     public static class FileRenamer
     {
-        public static void KeepFirstXAndLastYCharacters(string folderPath, int x, int y, 
+        public static void KeepFirstXAndLastYCharacters(string folderPath, int x, int y,
             IProducerConsumerCollection<string> log)
         {
             try
             {
-                var files = FileSystem.GetFiles(folderPath).Select(f => FileSystem.GetFileInfo(f));
+                var files = FileService.GetFiles(folderPath);
                 List<FileInfo> filesToProcess = FilterOutInvalidFiles(files, x, y);
                 if (filesToProcess.Any())
                 {
@@ -87,10 +87,39 @@ namespace Scripts
             return filesToProcess;
         }
 
+        public static void ReseedFiles(string folderPath, int initialSeed)
+        {
+            var currentSeed = initialSeed - 1;
+            var orderedFiles = FileService.GetFiles(folderPath).OrderBy(f => f.Name).ToArray();
+
+            // Get new names
+            var orderedDestinationNames = orderedFiles.Select(f =>
+            {
+                currentSeed++;
+                return Path.Combine(f.DirectoryName, currentSeed + f.Extension);
+            }).ToArray();
+
+            // Move to temp to avoid clashes (eg: 1.jpg -> 2.jpg while 2.jpg exists)
+            foreach (var file in orderedFiles)
+            {
+                var temp = Path.Combine(file.DirectoryName, Path.GetRandomFileName() + file.Extension);
+                file.MoveTo(temp);
+            }
+
+            // Rename
+            for (int i = 0; i < orderedFiles.Length; i++)
+            {
+                var file = orderedFiles[i];
+                var destination = orderedDestinationNames[i];
+                file.MoveTo(destination);
+            }
+
+            Fill(orderedFiles, 3); //hardcode for now
+        }
+
         public static void RemoveNonNumbers(string folderPath)
         {
-            var fullFileNames = FileSystem.GetFiles(folderPath);
-            var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
+            var files = FileService.GetFiles(folderPath);
 
             //Remove all characters
             foreach (var file in files)
@@ -107,10 +136,13 @@ namespace Scripts
 
         public static void Fill(string folderPath)
         {
-            //Fill
-            var fullFileNames = FileSystem.GetFiles(folderPath);
-            var files = fullFileNames.Select(f => FileSystem.GetFileInfo(f));
+            var files = FileService.GetFiles(folderPath);
             var maxLength = files.Any() ? files.Max(f => Path.GetFileNameWithoutExtension(f.Name).Length) : 0;
+            Fill(files, maxLength);
+        }
+
+        private static void Fill(IEnumerable<FileInfo> files, int maxLength)
+        {
             foreach (var file in files)
             {
                 var fileName = Path.GetFileNameWithoutExtension(file.Name);

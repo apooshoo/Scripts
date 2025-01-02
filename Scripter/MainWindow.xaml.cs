@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Scripter.Models;
+﻿using Scripter.Models;
 using Scripter.Services;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
@@ -49,19 +48,23 @@ namespace Scripter
         {
             var shouldTrim = TrimCheckBox.IsChecked.GetValueOrDefault();
             var trimLeft = TrimLeft.Text;
-            var trimRight = TrimRight.Text; 
+            var trimRight = TrimRight.Text;
 
             var shouldNormalise = NormaliseCheckBox.IsChecked.GetValueOrDefault();
 
+            var shouldReseed = ReseedCheckBox.IsChecked.GetValueOrDefault();
+            var reseedValue = ReseedValue.Text;
+
             var shouldConvert = ConvertCheckBox.IsChecked.GetValueOrDefault();
 
-            var folders = FolderSelectionService.GetFoldersToProcess(FolderPathTextBox.Text, 
+            var folders = FolderSelectionService.GetFoldersToProcess(FolderPathTextBox.Text,
                 (FolderSelectionOption)FolderSelectionComboBox.SelectedItem);
 
             return Task.Run(() =>
             {
                 if (shouldTrim) ScriptService.Trim(folders, trimLeft, trimRight, log);
                 if (shouldNormalise) ScriptService.Normalise(folders);
+                if (shouldReseed) ScriptService.Reseed(folders, reseedValue);
                 if (shouldConvert) ScriptService.Convert(folders, log);
             });
         }
@@ -69,7 +72,7 @@ namespace Scripter
         private void Trim_PreviewTextInput_ParseNumber(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-            e.Handled = Regex.IsMatch(e.Text, "[^0-9]") && e.Text.Length <= 2; 
+            e.Handled = Regex.IsMatch(e.Text, "[^0-9]") && e.Text.Length <= 2;
         }
 
         private void TextBox_GotFocus_SelectAll(object sender, RoutedEventArgs e)
