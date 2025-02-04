@@ -57,7 +57,7 @@ namespace Scripter
 
             var shouldConvert = ConvertCheckBox.IsChecked.GetValueOrDefault();
 
-            var folders = FileService.GetSelectedFolders(FolderPathTextBox.Text,
+            var folders = FileSelectionService.GetSelectedFolders(FolderPathTextBox.Text,
                 (FolderSelectionOption)FolderSelectionComboBox.SelectedItem);
 
             return Task.Run(() =>

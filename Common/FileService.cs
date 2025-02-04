@@ -12,13 +12,33 @@ namespace Common
 
         public static IEnumerable<FileInfo> GetFiles(string folder)
         {
-            if (string.IsNullOrEmpty(folder))
+            return GetFileNames(folder).Select(f => FileSystem.GetFileInfo(f));
+        }
+
+        private static IReadOnlyCollection<string> GetFileNames(string path)
+        {
+            try
             {
-                return Array.Empty<FileInfo>();
+                return !string.IsNullOrEmpty(path)
+                    ? FileSystem.GetFiles(path)
+                    : Array.Empty<string>();
             }
-            else
+            catch
             {
-                return Directory.GetFiles(folder).Select(f => FileSystem.GetFileInfo(f));
+                return Array.Empty<string>();
+            }
+        }
+        public static string[] GetSubFolderNames(string path)
+        {
+            try
+            {
+                return !string.IsNullOrEmpty(path)
+                    ? Directory.GetDirectories(path)
+                    : Array.Empty<string>();
+            }
+            catch
+            {
+                return Array.Empty<string>();
             }
         }
     }

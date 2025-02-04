@@ -89,32 +89,8 @@ namespace Scripts
 
         public static void ReseedFiles(string folderPath, int initialSeed)
         {
-            var currentSeed = initialSeed - 1;
-            var orderedFiles = FileService.GetFiles(folderPath).OrderBy(f => f.Name).ToArray();
-
-            // Get new names
-            var orderedDestinationNames = orderedFiles.Select(f =>
-            {
-                currentSeed++;
-                return Path.Combine(f.DirectoryName, currentSeed + f.Extension);
-            }).ToArray();
-
-            // Move to temp to avoid clashes (eg: 1.jpg -> 2.jpg while 2.jpg exists)
-            foreach (var file in orderedFiles)
-            {
-                var temp = Path.Combine(file.DirectoryName, Path.GetRandomFileName() + file.Extension);
-                file.MoveTo(temp);
-            }
-
-            // Rename
-            for (int i = 0; i < orderedFiles.Length; i++)
-            {
-                var file = orderedFiles[i];
-                var destination = orderedDestinationNames[i];
-                file.MoveTo(destination);
-            }
-
-            Fill(orderedFiles, 3); //hardcode for now
+            FileReseeder.ReseedFiles(folderPath, initialSeed);
+            Fill(folderPath);
         }
 
         public static void RemoveNonNumbers(string folderPath)
