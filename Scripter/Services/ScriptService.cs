@@ -1,4 +1,5 @@
 ﻿using Common;
+using Scripter.Models;
 using Scripts;
 using System.Collections.Concurrent;
 
@@ -6,7 +7,7 @@ namespace Scripter.Services
 {
     public static class ScriptService
     {
-        public static void Trim(string[] folders, string trimLeftStr, string trimRightStr,
+        public static void Trim(FolderSelection[] folders, string trimLeftStr, string trimRightStr,
             ConcurrentQueue<string> log)
         {
             if (int.TryParse(trimLeftStr, out var trimLeft)
@@ -15,39 +16,39 @@ namespace Scripter.Services
             {
                 foreach (var folder in folders)
                 {
-                    FileRenamer.KeepFirstXAndLastYCharacters(folder, trimLeft, trimRight, log);
+                    FileRenamer.KeepFirstXAndLastYCharacters(folder.Name, trimLeft, trimRight, log);
                 }
             }
         }
 
-        public static void Normalise(string[] folders)
+        public static void Normalise(FolderSelection[] folders)
         {
             foreach (var folder in folders)
             {
-                FileRenamer.RemoveNonNumbers(folder);
-                FileRenamer.Fill(folder);
+                FileRenamer.RemoveNonNumbers(folder.Name);
+                FileRenamer.Fill(folder.Name);
             }
         }
 
-        public static void Reseed(string[] folders, string reseedValueStr)
+        public static void Reseed(FolderSelection[] folders, string reseedValueStr)
         {
             if (int.TryParse(reseedValueStr, out var reseedValue) && reseedValue >= 0)
             {
                 foreach (var folder in folders)
                 {
-                    FileRenamer.ReseedFiles(folder, reseedValue);
+                    FileRenamer.ReseedFiles(folder.Name, reseedValue);
                 }
             }
         }
 
-        public static void Convert(string[] folders, IProducerConsumerCollection<string> log)
+        public static void Convert(FolderSelection[] folders, IProducerConsumerCollection<string> log)
         {
             foreach (var folder in folders)
             {
                 try
                 {
                     log.TryAdd("Converting: " + folder);
-                    ImageConverter.Convert(folder, ImageFormat.WEBP, ImageFormat.JPEG);
+                    ImageConverter.Convert(folder.Name, ImageFormat.WEBP, ImageFormat.JPEG);
                     log.TryAdd("Done converting.");
                 }
                 catch (Exception e)

@@ -41,13 +41,11 @@ namespace Scripter
             switch (folderSelectionOption.Enum)
             {
                 case FolderSelectionEnum.Folder:
-                    var files = FileService.GetFiles(folderPath)
-                        .Select(x => new FileSelection(x));
+                    var files = FileService.GetSelectedFiles(folderPath);
                     _selectedFiles.AddRange(files);
                     break;
                 case FolderSelectionEnum.SubFolders:
-                    var folders = FolderSelectionService.GetFoldersToProcess(folderPath, folderSelectionOption)
-                        .Select(x => new FolderSelection(x));
+                    var folders = FileService.GetSelectedFolders(folderPath, folderSelectionOption);
                     _selectedFolders.AddRange(folders);
                     break;
                 default:
