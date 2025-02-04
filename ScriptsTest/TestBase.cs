@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace ScriptsTest
 {
@@ -37,7 +31,7 @@ namespace ScriptsTest
 
         public string GetTestFolder(string folderName) => Path.Combine(TestBaseFolder, folderName);
 
-        private string GetRootDir() => 
+        private string GetRootDir() =>
             new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName ?? throw new Exception();
 
         public static void CleanUpFolder(string path)
@@ -61,6 +55,11 @@ namespace ScriptsTest
             {
                 file.CopyTo(Path.Combine(to, file.Name));
             }
+        }
+
+        public static void CreateEmptyFile(string fileName)
+        {
+            File.Create(fileName).Dispose();
         }
     }
 }
