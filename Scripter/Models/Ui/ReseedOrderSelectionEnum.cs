@@ -1,8 +1,8 @@
 ﻿namespace Scripter.Models.Ui
 {
-    public enum ReseedSelectionEnum
+    public enum ReseedOrderSelectionEnum
     {
         FileName,
-        ModifiedDate
+        CreationDate
     }
 }

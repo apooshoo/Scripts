@@ -43,7 +43,7 @@ namespace Scripter
             }
         }
 
-        private void ReseedSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ReseedOrderSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //TBD: Perhaps show a mockup of the result
         }

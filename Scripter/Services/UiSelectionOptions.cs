@@ -10,10 +10,10 @@ namespace Scripter.Services
             new FolderSelectionOption(FolderSelectionEnum.SubFolders, "Subfolders of selected folder")
         ];
 
-        public static readonly ReseedSelectionOption[] DefaultReseedSelectionOptions =
+        public static readonly ReseedOrderSelectionOption[] DefaultReseedSelectionOptions =
         [
-            new ReseedSelectionOption(ReseedSelectionEnum.FileName, "File name"),
-            new ReseedSelectionOption(ReseedSelectionEnum.ModifiedDate, "Modified Date")
+            new ReseedOrderSelectionOption(ReseedOrderSelectionEnum.FileName, "File name"),
+            new ReseedOrderSelectionOption(ReseedOrderSelectionEnum.CreationDate, "Creation Date")
         ];
     }
 }

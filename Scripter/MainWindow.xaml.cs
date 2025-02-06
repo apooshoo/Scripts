@@ -55,6 +55,7 @@ namespace Scripter
 
             var shouldReseed = ReseedCheckBox.IsChecked.GetValueOrDefault();
             var reseedValue = ReseedValue.Text;
+            var reseedOrder = ((ReseedOrderSelectionOption)ReseedOrderSelectionComboBox.SelectedItem).Enum;
 
             var shouldConvert = ConvertCheckBox.IsChecked.GetValueOrDefault();
 
@@ -65,7 +66,7 @@ namespace Scripter
             {
                 if (shouldTrim) ScriptService.Trim(folders, trimLeft, trimRight, log);
                 if (shouldNormalise) ScriptService.Normalise(folders);
-                if (shouldReseed) ScriptService.Reseed(folders, reseedValue);
+                if (shouldReseed) ScriptService.Reseed(folders, reseedValue, reseedOrder);
                 if (shouldConvert) ScriptService.Convert(folders, log);
             });
         }

@@ -78,13 +78,13 @@
                     <Label>Seed:</Label>
                     <TextBox x:Name="ReseedValue" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
                     <Label>Order By:</Label>
-                    <ComboBox x:Name="ReseedSelectionComboBox" 
+                    <ComboBox x:Name="ReseedOrderSelectionComboBox" 
                         Margin="5" Padding="5,2" 
                         VerticalContentAlignment="Center"
                         DisplayMemberPath="Text"
                         SelectedValuePath="Text"
                         IsEditable="false"
-                        SelectionChanged="ReseedSelectionComboBox_SelectionChanged" Width="153" />
+                        SelectionChanged="ReseedOrderSelectionComboBox_SelectionChanged" Width="153" />
                 </StackPanel>
             </StackPanel>
             <!--#endregion-->

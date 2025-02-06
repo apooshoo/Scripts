@@ -9,7 +9,7 @@ namespace Scripter
     public partial class MainWindow
     {
         public FolderSelectionOption[] _folderSelectionOptions { get; private set; } = UiSelectionOptions.DefaultFolderSelectionOptions;
-        public ReseedSelectionOption[] _reseedSelectionOptions { get; private set; } = UiSelectionOptions.DefaultReseedSelectionOptions;
+        public ReseedOrderSelectionOption[] _reseedSelectionOptions { get; private set; } = UiSelectionOptions.DefaultReseedSelectionOptions;
         public List<FileSelection> _selectedFiles { get; set; } = new();
         public List<FolderSelection> _selectedFolders { get; set; } = new();
 
@@ -21,8 +21,8 @@ namespace Scripter
 
         private void InitialiseReseedSelectionOptions()
         {
-            ReseedSelectionComboBox.ItemsSource = _reseedSelectionOptions;
-            ReseedSelectionComboBox.SelectedIndex = 0;
+            ReseedOrderSelectionComboBox.ItemsSource = _reseedSelectionOptions;
+            ReseedOrderSelectionComboBox.SelectedIndex = 0;
         }
 
         private void InitialisePreviewDataSources()

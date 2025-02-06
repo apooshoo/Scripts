@@ -1,5 +1,6 @@
 ﻿using Common;
 using Scripter.Models;
+using Scripter.Models.Ui;
 using Scripts;
 using System.Collections.Concurrent;
 
@@ -30,13 +31,23 @@ namespace Scripter.Services
             }
         }
 
-        public static void Reseed(FolderSelection[] folders, string reseedValueStr)
+        public static void Reseed(FolderSelection[] folders, string reseedValueStr, ReseedOrderSelectionEnum reseedOrder)
         {
             if (int.TryParse(reseedValueStr, out var reseedValue) && reseedValue >= 0)
             {
                 foreach (var folder in folders)
                 {
-                    FileRenamer.ReseedFiles(folder.Name, reseedValue);
+                    switch (reseedOrder)
+                    {
+                        case ReseedOrderSelectionEnum.FileName:
+                            FileRenamer.ReseedFiles(folder.Name, reseedValue);
+                            break;
+                        case ReseedOrderSelectionEnum.CreationDate:
+                            FileRenamer.ReseedFilesByCreationDate(folder.Name, reseedValue);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(reseedOrder));
+                    }
                 }
             }
         }

@@ -89,7 +89,15 @@ namespace Scripts
 
         public static void ReseedFiles(string folderPath, int initialSeed)
         {
-            FileReseeder.ReseedFiles(folderPath, initialSeed);
+            var files = FileReseeder.ReorderFilesByFileName(folderPath);
+            FileReseeder.ReseedFiles(files, initialSeed);
+            Fill(folderPath);
+        }
+
+        public static void ReseedFilesByCreationDate(string folderPath, int initialSeed)
+        {
+            var files = FileReseeder.ReorderFilesByModifiedDate(folderPath);
+            FileReseeder.ReseedFiles(files, initialSeed);
             Fill(folderPath);
         }
 

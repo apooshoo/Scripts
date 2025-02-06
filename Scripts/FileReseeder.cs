@@ -30,12 +30,11 @@ namespace Scripts
             }
         }
 
-        public static void ReseedFiles(string folderPath, int initialSeed)
+        public static void ReseedFiles(FileInfo[] files, int initialSeed)
         {
-            FileInfo[] orderedFiles = GetOrderedFiles(folderPath);
             var currentSeed = initialSeed - 1;
 
-            var reseedTasks = orderedFiles.Select(f =>
+            var reseedTasks = files.Select(f =>
             {
                 // Get new file names
                 currentSeed++;
@@ -54,7 +53,7 @@ namespace Scripts
             }
         }
 
-        private static FileInfo[] GetOrderedFiles(string folderPath)
+        public static FileInfo[] ReorderFilesByFileName(string folderPath)
         {
             var files = FileService.GetFiles(folderPath);
 
@@ -66,6 +65,12 @@ namespace Scripts
             {
                 return files.OrderBy(f => f.Name).ToArray();
             }
+        }
+
+        public static FileInfo[] ReorderFilesByModifiedDate(string folderPath)
+        {
+            var files = FileService.GetFiles(folderPath);
+            return files.OrderBy(f => f.CreationTime).ToArray();
         }
     }
 }
