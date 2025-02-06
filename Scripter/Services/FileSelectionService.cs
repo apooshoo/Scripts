@@ -1,5 +1,6 @@
 ﻿using Common;
 using Scripter.Models;
+using Scripter.Models.Ui;
 
 namespace Scripter.Services
 {

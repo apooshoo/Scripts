@@ -72,11 +72,19 @@
                 <StackPanel.Resources>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 </StackPanel.Resources>
-                <CheckBox x:Name="ReseedCheckBox" Content="Reseed file names" Margin="5" />
+                <CheckBox x:Name="ReseedCheckBox" Content="Reseed file names" Margin="5" IsChecked="True" />
                 <StackPanel Margin="5" Orientation="Horizontal"
                     Visibility="{Binding ElementName=ReseedCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Label>Seed:</Label>
                     <TextBox x:Name="ReseedValue" Margin="5" Padding="5,0" Text="0" PreviewTextInput="Trim_PreviewTextInput_ParseNumber" GotFocus="TextBox_GotFocus_SelectAll"></TextBox>
+                    <Label>Order By:</Label>
+                    <ComboBox x:Name="ReseedSelectionComboBox" 
+                        Margin="5" Padding="5,2" 
+                        VerticalContentAlignment="Center"
+                        DisplayMemberPath="Text"
+                        SelectedValuePath="Text"
+                        IsEditable="false"
+                        SelectionChanged="ReseedSelectionComboBox_SelectionChanged" Width="153" />
                 </StackPanel>
             </StackPanel>
             <!--#endregion-->
@@ -86,7 +94,7 @@
                 <CheckBox x:Name="ConvertCheckBox" Content="Convert Webps" Margin="5" />
             </StackPanel>
             <!--#endregion-->
-            
+
             <StackPanel Margin="5">
 
                 <Button Click="Start_Click"  Padding="5">START</Button>
@@ -100,7 +108,7 @@
                 <!--#endregion-->
 
                 <Button Click="Clear_Click"  Padding="5">Clear</Button>
-                        
+
             </StackPanel>
 
         </StackPanel>

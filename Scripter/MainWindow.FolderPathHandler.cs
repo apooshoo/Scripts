@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Scripter
 {
@@ -41,6 +41,11 @@ namespace Scripter
             {
                 TryPopulatePreviews(FolderPathTextBox.Text);
             }
+        }
+
+        private void ReseedSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //TBD: Perhaps show a mockup of the result
         }
     }
 }

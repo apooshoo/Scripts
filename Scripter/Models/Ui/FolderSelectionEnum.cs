@@ -1,4 +1,4 @@
-﻿namespace Scripter.Models
+﻿namespace Scripter.Models.Ui
 {
     public enum FolderSelectionEnum
     {

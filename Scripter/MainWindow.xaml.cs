@@ -1,4 +1,4 @@
-﻿using Scripter.Models;
+﻿using Scripter.Models.Ui;
 using Scripter.Services;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
@@ -17,6 +17,7 @@ namespace Scripter
         {
             InitializeComponent();
             InitialiseFolderSelectionOptions();
+            InitialiseReseedSelectionOptions();
             InitialisePreviewDataSources();
             DataContext = this;
         }
