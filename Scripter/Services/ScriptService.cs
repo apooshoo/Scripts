@@ -58,7 +58,7 @@ namespace Scripter.Services
             {
                 try
                 {
-                    log.TryAdd("Converting: " + folder);
+                    log.TryAdd("Converting: " + folder.Name);
                     ImageConverter.Convert(folder.Name, ImageFormat.WEBP, ImageFormat.JPEG);
                     log.TryAdd("Done converting.");
                 }
