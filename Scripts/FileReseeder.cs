@@ -1,56 +1,29 @@
 ﻿using Common;
+using Scripts.Models;
 
 namespace Scripts
 {
     public class FileReseeder
     {
-        private class ReseedTask
-        {
-            public FileInfo File { get; private set; }
-            public string Destination { get; private set; }
-            public string Temp { get; set; }
-
-            public ReseedTask(FileInfo file, string destination)
-            {
-                File = file;
-                Destination = destination;
-            }
-
-            public void MoveToTemp()
-            {
-                // Move to temp to avoid clashes (eg: 1.jpg -> 2.jpg while 2.jpg exists)
-                var temp = Path.Combine(File.DirectoryName, Path.GetRandomFileName() + File.Extension);
-                File.MoveTo(temp);
-                Temp = temp; // Store for rollback (TBD)
-            }
-
-            public void Rename()
-            {
-                File.MoveTo(Destination);
-            }
-        }
-
         public static void ReseedFiles(FileInfo[] files, int initialSeed)
         {
-            var currentSeed = initialSeed - 1;
+            var i = initialSeed - 1;
 
-            var reseedTasks = files.Select(f =>
+            var unitsOfWork = files.Select(f =>
             {
-                // Get new file names
-                currentSeed++;
-                var destination = Path.Combine(f.DirectoryName, currentSeed + f.Extension);
-                return new ReseedTask(f, destination);
+                i++;
+                return new ReseedUnitOfWork(f, i);
             }).ToArray();
 
-            foreach (var task in reseedTasks)
+            Parallel.ForEach(unitsOfWork, task =>
             {
-                task.MoveToTemp();
-            }
+                task.MoveToStaging();
+            });
 
-            foreach (var task in reseedTasks)
+            Parallel.ForEach(unitsOfWork, task =>
             {
-                task.Rename();
-            }
+                task.MoveToDestination();
+            });
         }
 
         public static FileInfo[] ReorderFilesByFileName(string folderPath)
