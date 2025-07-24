@@ -14,6 +14,13 @@
     </Window.SystemBackdrop>
 
     <Grid>
-
+        <NavigationView x:Name="NavView" PaneDisplayMode="Top" SelectionChanged="NavView_SelectionChanged" PaneTitle="Scripter">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Folder Selection &amp; Preview" Tag="FolderPreview" />
+                <NavigationViewItem Content="Reseed Options" Tag="ReseedOptions" />
+                <NavigationViewItem Content="Log/Status" Tag="LogStatus" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
     </Grid>
 </Window>

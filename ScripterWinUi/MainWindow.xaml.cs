@@ -1,31 +1,89 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace ScripterWinUi
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public static MainWindow? Current { get; private set; }
+        
+        private readonly Type[] _pageSequence = 
+        {
+            typeof(Pages.FolderPreviewPage),
+            typeof(Pages.ReseedOptionsPage),
+            typeof(Pages.LogStatusPage)
+        };
+        
+        private int _currentPageIndex = 0;
+
         public MainWindow()
         {
             InitializeComponent();
+            Current = this;
+            ContentFrame.Navigated += ContentFrame_Navigated;
+            NavigateToPage(0);
+        }
+
+        private void NavigateToPage(int index)
+        {
+            if (index >= _pageSequence.Length)          
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range of the page sequence.");
+            
+            _currentPageIndex = index;
+            ContentFrame.Navigate(_pageSequence[index]);           
+        }
+
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            var pageType = e.SourcePageType;
+            
+            if (pageType == typeof(Pages.FolderPreviewPage))
+            {
+                NavView.SelectedItem = NavView.MenuItems.Cast<NavigationViewItem>().First(item => item.Tag.Equals("FolderPreview"));
+                _currentPageIndex = 0;
+            }
+            else if (pageType == typeof(Pages.ReseedOptionsPage))
+            {
+                NavView.SelectedItem = NavView.MenuItems.Cast<NavigationViewItem>().First(item => item.Tag.Equals("ReseedOptions"));
+                _currentPageIndex = 1;
+            }
+            else if (pageType == typeof(Pages.LogStatusPage))
+            {
+                NavView.SelectedItem = NavView.MenuItems.Cast<NavigationViewItem>().First(item => item.Tag.Equals("LogStatus"));
+                _currentPageIndex = 2;
+            }
+        }
+
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.SelectedItem is not NavigationViewItem item) 
+                throw new ArgumentOutOfRangeException(nameof(args), "Selected item is not a NavigationViewItem.");
+
+            switch (item.Tag)
+            {
+                case "FolderPreview":
+                    NavigateToPage(0);
+                    break;
+                case "ReseedOptions":
+                    NavigateToPage(1);
+                    break;
+                case "LogStatus":
+                    NavigateToPage(2);
+                    break;
+            }
+        }
+
+        public void GoForward()
+        {
+            if (_currentPageIndex < _pageSequence.Length - 1) NavigateToPage(_currentPageIndex + 1);
+        }
+
+        public void GoBack()
+        {
+            if (_currentPageIndex > 0) NavigateToPage(_currentPageIndex - 1);
         }
     }
 }
