@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptsTest", "ScriptsTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{C2965237-A600-4904-836C-C238004B578B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScripterWinUi", "ScripterWinUi\ScripterWinUi.csproj", "{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{C2965237-A600-4904-836C-C238004B578B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2965237-A600-4904-836C-C238004B578B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2965237-A600-4904-836C-C238004B578B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Debug|Any CPU.Build.0 = Debug|x64
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Release|Any CPU.ActiveCfg = Release|x64
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Release|Any CPU.Build.0 = Release|x64
+		{7C62B538-F6A5-4AFF-B150-E5318B05A4DF}.Release|Any CPU.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ScripterWinUi (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "ScripterWinUi (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
