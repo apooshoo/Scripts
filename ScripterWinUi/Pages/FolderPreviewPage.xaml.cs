@@ -157,14 +157,4 @@ public sealed partial class FolderPreviewPage : Page
         SelectedFolders.Clear();
         UpdatePreviewVisibility();
     }
-
-    private void Back_Click(object sender, RoutedEventArgs e)
-    {
-        MainWindow.Current?.GoBack();
-    }
-
-    private void Forward_Click(object sender, RoutedEventArgs e)
-    {
-        MainWindow.Current?.GoForward();
-    }
 }

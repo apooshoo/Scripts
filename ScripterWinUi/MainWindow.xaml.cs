@@ -27,15 +27,6 @@ public sealed partial class MainWindow : Window
         NavigateToPage(0);
     }
 
-    private void NavigateToPage(int index)
-    {
-        if (index >= 0 && index < _pageSequence.Length)
-        {
-            _currentPageIndex = index;
-            ContentFrame.Navigate(_pageSequence[index]);
-        }
-    }
-
     private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
     {
         var pageType = e.SourcePageType;
@@ -54,6 +45,18 @@ public sealed partial class MainWindow : Window
         {
             NavView.SelectedItem = NavView.MenuItems.Cast<NavigationViewItem>().First(item => item.Tag.Equals("LogStatus"));
             _currentPageIndex = 2;
+        }
+        
+        UpdateNavigationButtonStates();
+    }
+
+    private void NavigateToPage(int index)
+    {
+        if (index >= 0 && index < _pageSequence.Length)
+        {
+            _currentPageIndex = index;
+            ContentFrame.Navigate(_pageSequence[index]);
+            UpdateNavigationButtonStates();
         }
     }
 
@@ -76,19 +79,30 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    public void GoBack()
+    private void UpdateNavigationButtonStates()
     {
-        if (_currentPageIndex > 0)
+        // WinUI automatically handles disabled styling when IsEnabled is set
+        BackButton.IsEnabled = CanGoBack();
+        ForwardButton.IsEnabled = CanGoForward();
+    }
+
+
+    private void BackButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (CanGoBack())
         {
             NavigateToPage(_currentPageIndex - 1);
         }
     }
 
-    public void GoForward()
+    private void ForwardButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentPageIndex < _pageSequence.Length - 1)
+        if (CanGoForward())
         {
             NavigateToPage(_currentPageIndex + 1);
         }
     }
+
+    private bool CanGoBack() => _currentPageIndex > 0;
+    private bool CanGoForward() => _currentPageIndex < _pageSequence.Length - 1;
 }

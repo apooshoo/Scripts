@@ -14,12 +14,48 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.Resources>
+            <!-- Custom style for navigation buttons -->
+            <Style x:Key="NavigationButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="4" />
+                <Setter Property="Padding" Value="12,6" />
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+            </Style>
+        </Grid.Resources>
+        
         <NavigationView x:Name="NavView" PaneDisplayMode="Top" SelectionChanged="NavView_SelectionChanged" PaneTitle="Scripter">
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Folder Selection &amp; Preview" Tag="FolderPreview" />
                 <NavigationViewItem Content="Reseed Options" Tag="ReseedOptions" />
                 <NavigationViewItem Content="Log/Status" Tag="LogStatus" />
             </NavigationView.MenuItems>
+            
+            <!-- Navigation Buttons in Header -->
+            <NavigationView.PaneCustomContent>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+                    <Button x:Name="BackButton" 
+                            Click="BackButton_Click" 
+                            Style="{StaticResource NavigationButtonStyle}"
+                            ToolTipService.ToolTip="Previous page">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE76B;" FontSize="16" />
+                            <TextBlock Text="Back" />
+                        </StackPanel>
+                    </Button>
+                    
+                    <Button x:Name="ForwardButton" 
+                            Click="ForwardButton_Click"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            ToolTipService.ToolTip="Next page">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="Forward" />
+                            <FontIcon Glyph="&#xE76C;" FontSize="16" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </NavigationView.PaneCustomContent>
+            
             <Frame x:Name="ContentFrame" />
         </NavigationView>
     </Grid>

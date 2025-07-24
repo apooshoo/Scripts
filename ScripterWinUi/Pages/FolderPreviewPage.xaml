@@ -10,19 +10,12 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Navigation Buttons -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Back" Click="Back_Click" Margin="0,0,5,0" />
-            <Button Content="Forward" Click="Forward_Click" />
-        </StackPanel>
-
         <!-- Folder Selection Section -->
-        <StackPanel Grid.Row="1" Margin="20" Spacing="15">
+        <StackPanel Grid.Row="0" Margin="20" Spacing="15">
             <TextBlock Text="Folder Selection &amp; Preview" Style="{ThemeResource TitleTextBlockStyle}" />
             
             <!-- Folder Path Selection -->
@@ -49,7 +42,7 @@
         </StackPanel>
 
         <!-- Preview Section -->
-        <ScrollViewer Grid.Row="2" Margin="20,0,20,20">
+        <ScrollViewer Grid.Row="1" Margin="20,0,20,20">
             <StackPanel Spacing="15">
                 <TextBlock Text="Preview" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 
@@ -82,7 +75,7 @@
         </ScrollViewer>
 
         <!-- Status Bar -->
-        <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+        <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="20,10">
             <TextBlock x:Name="StatusTextBlock" Text="Ready" Style="{ThemeResource CaptionTextBlockStyle}" />
         </Border>
