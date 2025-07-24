@@ -44,6 +44,10 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Scripts\Scripts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Pages\LogStatusPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

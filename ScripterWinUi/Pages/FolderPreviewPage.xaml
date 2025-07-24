@@ -8,10 +8,83 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button Content="Back" Click="Back_Click" Margin="0,0,5,0" />
             <Button Content="Forward" Click="Forward_Click" />
         </StackPanel>
-        <TextBlock Text="Folder Selection &amp; Preview Page" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+        <!-- Folder Selection Section -->
+        <StackPanel Grid.Row="1" Margin="20" Spacing="15">
+            <TextBlock Text="Folder Selection &amp; Preview" Style="{ThemeResource TitleTextBlockStyle}" />
+            
+            <!-- Folder Path Selection -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Folder Path:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="FolderPathTextBox" Grid.Column="0" PlaceholderText="Select a folder..." 
+                             LostFocus="FolderPathTextBox_LostFocus" />
+                    <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse..." Click="BrowseButton_Click" 
+                            Margin="8,0,0,0" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Folder Selection Options -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Selection Mode:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                <ComboBox x:Name="FolderSelectionComboBox" MinWidth="200" 
+                          SelectionChanged="FolderSelectionComboBox_SelectionChanged" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Preview Section -->
+        <ScrollViewer Grid.Row="2" Margin="20,0,20,20">
+            <StackPanel Spacing="15">
+                <TextBlock Text="Preview" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                
+                <!-- Files Preview -->
+                <StackPanel x:Name="FilesPreviewSection" Spacing="8">
+                    <TextBlock Text="Files:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <ListView x:Name="PreviewFiles" MaxHeight="200" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                              BorderThickness="1" CornerRadius="4">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+
+                <!-- Folders Preview -->
+                <StackPanel x:Name="FoldersPreviewSection" Spacing="8">
+                    <TextBlock Text="Folders:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <ListView x:Name="PreviewFolders" MaxHeight="200" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                              BorderThickness="1" CornerRadius="4">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="20,10">
+            <TextBlock x:Name="StatusTextBlock" Text="Ready" Style="{ThemeResource CaptionTextBlockStyle}" />
+        </Border>
     </Grid>
 </Page>
