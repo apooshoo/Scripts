@@ -1,3 +1,5 @@
+using System;
+
 namespace ScripterWinUi.Models.Ui;
 
 public class FolderSelectionOption
@@ -7,6 +9,7 @@ public class FolderSelectionOption
 
     public FolderSelectionOption(FolderSelectionEnum enumm, string text)
     {
+        ArgumentNullException.ThrowIfNull(text);
         Enum = enumm;
         Text = text;
     }
