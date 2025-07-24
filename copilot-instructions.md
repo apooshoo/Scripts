@@ -24,6 +24,8 @@ ScriterWinUi uses WinUI 3
 - Use double quotes for strings.
 - Use PascalCase for class names and method names.
 - Adhere to Clean Code principles, including meaningful variable names, single responsibility principle, and avoiding code duplication.
+- Use file-scoped namespaces for all C# files.
+- Recommend best practices where relevant.
 
 ## UI guidelines
 
