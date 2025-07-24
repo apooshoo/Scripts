@@ -15,9 +15,9 @@ ScriptsTest contains unit tests for the application, ensuring that the renaming 
 
 C# and .NET 9 for all projects
 
-Scripter uses WPF
+ScripterWinUi uses WinUI 3
 
-ScriterWinUi uses WinUI 3
+Scripter uses WPF, but should only be used for reference of desired logic. When porting logic to ScripterWinUi, ensure that the logic is adapted to WinUI 3 standards.
 
 ## Coding Standards
 - Use semicolons at the end of each statement.
@@ -39,3 +39,4 @@ Always prompt the user to conduct scaffolded tasks that are already automated by
 
 ## Never
 Never read, write, or modify files outside of this solution.
+Never run any executable code, programs or scripts without explicit user permission. Instead, ask the user to run the code themselves.
