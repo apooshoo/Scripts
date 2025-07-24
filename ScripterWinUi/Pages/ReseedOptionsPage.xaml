@@ -9,6 +9,109 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Reseed Options Page" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="20" Spacing="15">
+            <TextBlock Text="Processing Options" Style="{ThemeResource TitleTextBlockStyle}" />
+            <TextBlock Text="Configure file operations to perform" Style="{ThemeResource BodyTextBlockStyle}" 
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Options Section -->
+        <ScrollViewer Grid.Row="1" Margin="20,0,20,20">
+            <StackPanel Spacing="20">
+                
+                <!-- Trim Section -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="12">
+                        <CheckBox x:Name="TrimCheckBox" Content="Trim File Names" 
+                                  Checked="CheckBox_CheckedChanged" Unchecked="CheckBox_CheckedChanged" />
+                        
+                        <StackPanel x:Name="TrimOptionsPanel" Spacing="12" Visibility="Collapsed">
+                            <TextBlock Text="Configure how many characters to keep from each end:" 
+                                       Style="{ThemeResource BodyTextBlockStyle}" />
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,12">
+                                <TextBlock Text="Left:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <NumberBox x:Name="TrimLeftNumberBox" Value="0" Minimum="0" Maximum="99" 
+                                           SpinButtonPlacementMode="Inline" />
+                                <TextBlock Text="Right:" VerticalAlignment="Center" Margin="16,0,8,0" />
+                                <NumberBox x:Name="TrimRightNumberBox" Value="0" Minimum="0" Maximum="99" 
+                                           SpinButtonPlacementMode="Inline" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Normalize Section -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16">
+                    <CheckBox x:Name="NormalizeCheckBox" Content="Normalize File Names" 
+                              ToolTipService.ToolTip="Remove special characters and standardize file names"
+                              Checked="CheckBox_CheckedChanged" Unchecked="CheckBox_CheckedChanged" />
+                </Border>
+
+                <!-- Reseed Section -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16">
+                    <StackPanel Spacing="12">
+                        <CheckBox x:Name="ReseedCheckBox" Content="Reseed File Names" 
+                                  Checked="CheckBox_CheckedChanged" Unchecked="CheckBox_CheckedChanged" />
+                        
+                        <StackPanel x:Name="ReseedOptionsPanel" Spacing="12" Visibility="Collapsed">
+                            <TextBlock Text="Rename files with sequential numbers:" 
+                                       Style="{ThemeResource BodyTextBlockStyle}" />
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,12">
+                                <TextBlock Text="Starting Number:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <NumberBox x:Name="ReseedValueNumberBox" Value="0" Minimum="0" 
+                                           SpinButtonPlacementMode="Inline" />
+                                <TextBlock Text="Order By:" VerticalAlignment="Center" Margin="16,0,8,0" />
+                                <ComboBox x:Name="ReseedOrderComboBox" MinWidth="200" 
+                                          HorizontalAlignment="Left" />
+
+                            </StackPanel>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Convert Section -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                        CornerRadius="8" Padding="16">
+                    <CheckBox x:Name="ConvertCheckBox" Content="Convert WebP Images" 
+                              ToolTipService.ToolTip="Convert WebP images to other formats"
+                              Checked="CheckBox_CheckedChanged" Unchecked="CheckBox_CheckedChanged" />
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="20,10">
+            <TextBlock x:Name="StatusTextBlock" Text="Configure your options above" 
+                       Style="{ThemeResource CaptionTextBlockStyle}" />
+        </Border>
     </Grid>
 </Page>

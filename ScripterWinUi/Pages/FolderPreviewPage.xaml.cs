@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using ScripterWinUi.Models;
 using ScripterWinUi.Models.Ui;
 using ScripterWinUi.Services;
@@ -17,11 +18,23 @@ public sealed partial class FolderPreviewPage : Page
     public ObservableCollection<FolderSelection> SelectedFolders { get; } = new();
     
     private FolderSelectionOption[] _folderSelectionOptions = UiSelectionOptions.DefaultFolderSelectionOptions;
+    private readonly AppStateService _appState = AppStateService.Instance;
 
     public FolderPreviewPage()
     {
         InitializeComponent();
         InitializeControls();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        
+        // Restore state if available
+        if (!string.IsNullOrEmpty(_appState.SelectedFolderPath))
+        {
+            FolderPathTextBox.Text = _appState.SelectedFolderPath;
+        }
     }
 
     private void InitializeControls()
@@ -80,6 +93,7 @@ public sealed partial class FolderPreviewPage : Page
         if (string.IsNullOrEmpty(folderPath))
         {
             ClearPreviews();
+            UpdateAppState();
             return;
         }
 
@@ -111,6 +125,7 @@ public sealed partial class FolderPreviewPage : Page
                                     SelectedFiles.Add(file);
                                 }
                                 UpdatePreviewVisibility();
+                                UpdateAppState();
                             });
                             break;
 
@@ -124,6 +139,7 @@ public sealed partial class FolderPreviewPage : Page
                                     SelectedFolders.Add(folder);
                                 }
                                 UpdatePreviewVisibility();
+                                UpdateAppState();
                             });
                             break;
                     }
@@ -156,5 +172,26 @@ public sealed partial class FolderPreviewPage : Page
         SelectedFiles.Clear();
         SelectedFolders.Clear();
         UpdatePreviewVisibility();
+    }
+
+    private void UpdateAppState()
+    {
+        // Update shared application state
+        _appState.SelectedFolderPath = FolderPathTextBox.Text;
+        _appState.SelectedFolderOption = (FolderSelectionOption?)FolderSelectionComboBox.SelectedItem;
+        
+        // Sync collections
+        _appState.SelectedFiles.Clear();
+        _appState.SelectedFolders.Clear();
+        
+        foreach (var file in SelectedFiles)
+        {
+            _appState.SelectedFiles.Add(file);
+        }
+        
+        foreach (var folder in SelectedFolders)
+        {
+            _appState.SelectedFolders.Add(folder);
+        }
     }
 }

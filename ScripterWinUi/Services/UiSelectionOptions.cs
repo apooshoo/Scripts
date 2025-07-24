@@ -9,4 +9,10 @@ public static class UiSelectionOptions
         new FolderSelectionOption(FolderSelectionEnum.Folder, "Selected folder"),
         new FolderSelectionOption(FolderSelectionEnum.SubFolders, "Subfolders of selected folder")
     ];
+
+    public static readonly ReseedOrderSelectionOption[] DefaultReseedSelectionOptions =
+    [
+        new ReseedOrderSelectionOption(ReseedOrderSelectionEnum.FileName, "File name"),
+        new ReseedOrderSelectionOption(ReseedOrderSelectionEnum.CreationDate, "Creation Date")
+    ];
 }

@@ -9,6 +9,62 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Log/Status Page" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="20" Spacing="15">
+            <TextBlock Text="Execute Operations" Style="{ThemeResource TitleTextBlockStyle}" />
+            <TextBlock x:Name="OperationSummaryTextBlock" Text="Ready to start processing" 
+                       Style="{ThemeResource BodyTextBlockStyle}" 
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Log Output Section -->
+        <Border Grid.Row="1" Margin="20,0,20,20" 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" 
+                CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,12,16,8" Spacing="10">
+                    <TextBlock Text="Operation Log" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <Button x:Name="ClearLogButton" Content="Clear Log" Click="ClearLogButton_Click" 
+                            Style="{ThemeResource AccentButtonStyle}" />
+                </StackPanel>
+                
+                <ScrollViewer x:Name="LogScrollViewer" Grid.Row="1" Margin="16,0,16,16" 
+                              ZoomMode="Disabled" HorizontalScrollMode="Auto" 
+                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="LogTextBlock" Text="Ready to start operations..." 
+                               FontFamily="Consolas" FontSize="12" TextWrapping="NoWrap" 
+                               IsTextSelectionEnabled="True" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- Progress Section -->
+        <StackPanel Grid.Row="2" Margin="20,0,20,10" Spacing="8">
+            <TextBlock x:Name="ProgressTextBlock" Text="Progress: Ready" 
+                       Style="{ThemeResource BodyTextBlockStyle}" />
+            <ProgressBar x:Name="OperationProgressBar" Value="0" Maximum="100" />
+        </StackPanel>
+
+        <!-- Control Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" 
+                    Margin="20" Spacing="15">
+            <Button x:Name="StartButton" Content="Start Operations" Click="StartButton_Click" 
+                    Style="{ThemeResource AccentButtonStyle}" MinWidth="150" />
+            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" 
+                    IsEnabled="False" MinWidth="100" />
+        </StackPanel>
     </Grid>
 </Page>
