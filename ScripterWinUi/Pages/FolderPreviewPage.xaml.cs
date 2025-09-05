@@ -29,12 +29,13 @@ public sealed partial class FolderPreviewPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        
-        // Restore state if available
-        if (!string.IsNullOrEmpty(_appState.SelectedFolderPath))
-        {
-            FolderPathTextBox.Text = _appState.SelectedFolderPath;
-        }
+        LoadAppState();
+    }
+    
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        SaveAppState();
+        base.OnNavigatedFrom(e);
     }
 
     private void InitializeControls()
@@ -93,7 +94,6 @@ public sealed partial class FolderPreviewPage : Page
         if (string.IsNullOrEmpty(folderPath))
         {
             ClearPreviews();
-            UpdateAppState();
             return;
         }
 
@@ -125,7 +125,6 @@ public sealed partial class FolderPreviewPage : Page
                                     SelectedFiles.Add(file);
                                 }
                                 UpdatePreviewVisibility();
-                                UpdateAppState();
                             });
                             break;
 
@@ -139,7 +138,6 @@ public sealed partial class FolderPreviewPage : Page
                                     SelectedFolders.Add(folder);
                                 }
                                 UpdatePreviewVisibility();
-                                UpdateAppState();
                             });
                             break;
                     }
@@ -174,24 +172,38 @@ public sealed partial class FolderPreviewPage : Page
         UpdatePreviewVisibility();
     }
 
-    private void UpdateAppState()
+    private void SaveAppState()
     {
-        // Update shared application state
         _appState.SelectedFolderPath = FolderPathTextBox.Text;
         _appState.SelectedFolderOption = (FolderSelectionOption?)FolderSelectionComboBox.SelectedItem;
         
-        // Sync collections
         _appState.SelectedFiles.Clear();
         _appState.SelectedFolders.Clear();
-        
         foreach (var file in SelectedFiles)
         {
             _appState.SelectedFiles.Add(file);
         }
-        
         foreach (var folder in SelectedFolders)
         {
             _appState.SelectedFolders.Add(folder);
         }
+    }
+
+    private void LoadAppState()
+    {
+        FolderPathTextBox.Text = _appState.SelectedFolderPath;
+        FolderSelectionComboBox.SelectedItem = _appState.SelectedFolderOption ?? _folderSelectionOptions.First();
+        
+        SelectedFiles.Clear();
+        SelectedFolders.Clear();
+        foreach (var file in _appState.SelectedFiles)
+        {
+            SelectedFiles.Add(file);
+        }
+        foreach (var folder in _appState.SelectedFolders)
+        {
+            SelectedFolders.Add(folder);
+        }
+        UpdatePreviewVisibility();
     }
 }
