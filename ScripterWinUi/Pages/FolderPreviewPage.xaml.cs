@@ -91,11 +91,7 @@ public sealed partial class FolderPreviewPage : Page
 
     private async Task OnFolderPathChangedAsync(string folderPath)
     {
-        if (string.IsNullOrEmpty(folderPath))
-        {
-            ClearPreviews();
-            return;
-        }
+        ClearPreviews();
 
         try
         {
