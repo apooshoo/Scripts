@@ -18,6 +18,7 @@ public sealed partial class LogStatusPage : Page
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly AppStateService _appState = AppStateService.Instance;
     private DateTime _operationStartTime;
+    private AiRenameParameter? _pendingAiRename;
 
     public LogStatusPage()
     {
@@ -32,6 +33,11 @@ public sealed partial class LogStatusPage : Page
             return;
         }
 
+        await ExecuteStandardOperationsAsync();
+    }
+
+    private async Task ExecuteStandardOperationsAsync()
+    {
         try
         {
             // Setup for operation
@@ -78,6 +84,67 @@ public sealed partial class LogStatusPage : Page
         {
             AppendLog("");
             AppendLog("Operations cancelled by user.");
+            ProgressTextBlock.Text = "Progress: Cancelled";
+        }
+        catch (Exception ex)
+        {
+            AppendLog("");
+            AppendLog($"Error: {ex.Message}");
+            ProgressTextBlock.Text = "Progress: Error occurred";
+        }
+        finally
+        {
+            CancelButton.IsEnabled = false;
+            OperationProgressBar.IsIndeterminate = false;
+            
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    private async Task ExecuteAiRenameAsync(AiRenameParameter renameParam)
+    {
+        try
+        {
+            // Setup for operation
+            _cancellationTokenSource = new CancellationTokenSource();
+            _operationStartTime = DateTime.Now;
+            
+            // Update UI state
+            CancelButton.IsEnabled = true;
+            OperationProgressBar.IsIndeterminate = true;
+            ProgressTextBlock.Text = "Progress: Starting AI rename...";
+            OperationSummaryTextBlock.Text = $"AI Rename: {renameParam.Renames.Count} files";
+            
+            AppendLog("Starting AI-powered rename operation...");
+
+            // Create progress reporter
+            var progress = new Progress<string>(message =>
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    AppendLog(message);
+                });
+            });
+
+            // Execute AI rename operations
+            await AiRenameService.ExecuteRenamesAsync(
+                renameParam.FolderPath,
+                renameParam.Renames,
+                progress,
+                _cancellationTokenSource.Token);
+
+            var elapsed = DateTime.Now - _operationStartTime;
+            AppendLog("");
+            AppendLog($"AI rename completed successfully in {elapsed.TotalSeconds:F1} seconds.");
+            ProgressTextBlock.Text = "Progress: Completed successfully";
+            OperationProgressBar.Value = 100;
+            OperationProgressBar.IsIndeterminate = false;
+        }
+        catch (OperationCanceledException)
+        {
+            AppendLog("");
+            AppendLog("AI rename cancelled by user.");
             ProgressTextBlock.Text = "Progress: Cancelled";
         }
         catch (Exception ex)
@@ -146,16 +213,33 @@ public sealed partial class LogStatusPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+
+        // Handle AI rename parameter - auto-start immediately
+        if (e.Parameter is AiRenameParameter aiRenameParam)
+        {
+            _pendingAiRename = aiRenameParam;
+            OperationSummaryTextBlock.Text = $"AI Rename: {aiRenameParam.Renames.Count} files in {aiRenameParam.FolderPath}";
+            
+            // Use DispatcherQueue to ensure UI is fully loaded, then start
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100); // Small delay to ensure UI is ready
+                await ExecuteAiRenameAsync(aiRenameParam);
+            });
+            return;
+        }
+
+        // Standard operation flow
         UpdateOperationSummary();
 
-        // Check if we should auto-start operations
+        // Check if we should auto-start standard operations
         if (e.Parameter is bool shouldAutoStart && shouldAutoStart)
         {
             // Use DispatcherQueue to ensure UI is fully loaded
             DispatcherQueue.TryEnqueue(async () =>
             {
                 await Task.Delay(100); // Small delay to ensure UI is ready
-                StartButton_Click(this, new RoutedEventArgs());
+                await ExecuteStandardOperationsAsync();
             });
         }
     }

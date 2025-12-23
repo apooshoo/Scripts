@@ -5,8 +5,10 @@ using ScripterWinUi.Models;
 using ScripterWinUi.Models.Ui;
 using ScripterWinUi.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 
@@ -19,6 +21,9 @@ public sealed partial class FolderPreviewPage : Page
     
     private FolderSelectionOption[] _folderSelectionOptions = UiSelectionOptions.DefaultFolderSelectionOptions;
     private readonly AppStateService _appState = AppStateService.Instance;
+    private readonly OllamaService _ollamaService = new();
+    private CancellationTokenSource? _aiCancellationTokenSource;
+    private RenameSuggestion? _currentSuggestion;
 
     public FolderPreviewPage()
     {
@@ -159,6 +164,14 @@ public sealed partial class FolderPreviewPage : Page
     {
         FilesPreviewSection.Visibility = SelectedFiles.Any() ? Visibility.Visible : Visibility.Collapsed;
         FoldersPreviewSection.Visibility = SelectedFolders.Any() ? Visibility.Visible : Visibility.Collapsed;
+        
+        // Show AI suggestion section when files are available
+        AiSuggestionSection.Visibility = SelectedFiles.Any() ? Visibility.Visible : Visibility.Collapsed;
+        
+        // Reset suggestion panels when files change
+        SuggestionResultPanel.Visibility = Visibility.Collapsed;
+        SuggestionErrorPanel.Visibility = Visibility.Collapsed;
+        _currentSuggestion = null;
     }
 
     private void ClearPreviews()
@@ -202,4 +215,99 @@ public sealed partial class FolderPreviewPage : Page
         }
         UpdatePreviewVisibility();
     }
+
+    private async void AiSuggestButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!SelectedFiles.Any())
+        {
+            return;
+        }
+
+        try
+        {
+            // Cancel any previous request
+            _aiCancellationTokenSource?.Cancel();
+            _aiCancellationTokenSource = new CancellationTokenSource();
+
+            // Update UI state
+            AiSuggestButton.IsEnabled = false;
+            AiProgressRing.IsActive = true;
+            AiProgressRing.Visibility = Visibility.Visible;
+            SuggestionResultPanel.Visibility = Visibility.Collapsed;
+            SuggestionErrorPanel.Visibility = Visibility.Collapsed;
+            StatusTextBlock.Text = "Generating AI rename plan...";
+
+            // Get file names for analysis
+            var fileNames = SelectedFiles.Select(f => f.Name).ToList();
+
+            // Call Ollama service
+            _currentSuggestion = await _ollamaService.SuggestRenamesAsync(
+                fileNames, 
+                _aiCancellationTokenSource.Token);
+
+            if (_currentSuggestion.IsSuccess)
+            {
+                // Display rename preview (show sample of mappings)
+                var previewItems = _currentSuggestion.Renames.Take(20).ToList();
+                RenamePreviewList.ItemsSource = previewItems;
+                
+                var totalCount = _currentSuggestion.Renames.Count;
+                RenameCountText.Text = totalCount > 20 
+                    ? $"Showing 20 of {totalCount} renames" 
+                    : $"{totalCount} files will be renamed";
+                
+                SuggestionReasoningText.Text = _currentSuggestion.Reasoning;
+                SuggestionResultPanel.Visibility = Visibility.Visible;
+                
+                StatusTextBlock.Text = $"AI rename plan generated ({totalCount} files)";
+            }
+            else
+            {
+                SuggestionErrorText.Text = _currentSuggestion.Reasoning;
+                SuggestionErrorPanel.Visibility = Visibility.Visible;
+                StatusTextBlock.Text = "AI rename plan failed";
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            StatusTextBlock.Text = "AI suggestion cancelled";
+        }
+        catch (Exception ex)
+        {
+            SuggestionErrorText.Text = $"Error: {ex.Message}\n\nMake sure Ollama is running locally on port 11434.";
+            SuggestionErrorPanel.Visibility = Visibility.Visible;
+            StatusTextBlock.Text = "AI suggestion failed";
+        }
+        finally
+        {
+            AiSuggestButton.IsEnabled = true;
+            AiProgressRing.IsActive = false;
+            AiProgressRing.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void AcceptSuggestionButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentSuggestion == null || !_currentSuggestion.IsSuccess)
+        {
+            return;
+        }
+
+        // Save current folder state
+        SaveAppState();
+
+        // Create navigation parameter with rename data
+        var renameParameter = new AiRenameParameter(
+            FolderPath: FolderPathTextBox.Text,
+            Renames: _currentSuggestion.Renames
+        );
+
+        // Navigate directly to LogStatusPage with AI rename parameter
+        Frame.Navigate(typeof(LogStatusPage), renameParameter);
+    }
 }
+
+/// <summary>
+/// Navigation parameter for AI rename operations
+/// </summary>
+public record AiRenameParameter(string FolderPath, List<RenameMapping> Renames);
