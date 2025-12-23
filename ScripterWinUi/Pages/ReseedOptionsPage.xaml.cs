@@ -46,6 +46,7 @@ public sealed partial class ReseedOptionsPage : Page
         UpdateVisibility();
 
         UpdateStatus();
+        UpdateStartButtonState();
     }
 
     private void SaveStateToAppService()
@@ -68,6 +69,7 @@ public sealed partial class ReseedOptionsPage : Page
         UpdateVisibility();
         SaveStateToAppService();
         UpdateStatus();
+        UpdateStartButtonState();
     }
 
     private void UpdateStatus()
@@ -100,6 +102,7 @@ public sealed partial class ReseedOptionsPage : Page
     {
         base.OnNavigatedTo(e);
         LoadStateFromAppService();
+        UpdateStartButtonState();
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -112,5 +115,24 @@ public sealed partial class ReseedOptionsPage : Page
     {
         TrimOptionsPanel.Visibility = TrimCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
         ReseedOptionsPanel.Visibility = ReseedCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void UpdateStartButtonState()
+    {
+        StartOperationsButton.IsEnabled = _appState.CanStartOperations();
+    }
+
+    private void StartOperationsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_appState.CanStartOperations())
+        {
+            return;
+        }
+
+        // Save current state before navigating
+        SaveStateToAppService();
+
+        // Navigate to LogStatusPage with auto-start parameter
+        Frame.Navigate(typeof(Pages.LogStatusPage), true);
     }
 }

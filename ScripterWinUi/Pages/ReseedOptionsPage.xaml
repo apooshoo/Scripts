@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -113,5 +114,12 @@
             <TextBlock x:Name="StatusTextBlock" Text="Configure your options above" 
                        Style="{ThemeResource CaptionTextBlockStyle}" />
         </Border>
+
+        <!-- Start Operations Button -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" 
+                    Margin="20" Spacing="15">
+            <Button x:Name="StartOperationsButton" Content="Start Operations" Click="StartOperationsButton_Click" 
+                    Style="{ThemeResource AccentButtonStyle}" MinWidth="150" />
+        </StackPanel>
     </Grid>
 </Page>

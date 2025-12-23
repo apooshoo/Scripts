@@ -39,7 +39,6 @@ public sealed partial class LogStatusPage : Page
             _operationStartTime = DateTime.Now;
             
             // Update UI state
-            StartButton.IsEnabled = false;
             CancelButton.IsEnabled = true;
             OperationProgressBar.IsIndeterminate = true;
             ProgressTextBlock.Text = "Progress: Starting operations...";
@@ -89,7 +88,6 @@ public sealed partial class LogStatusPage : Page
         }
         finally
         {
-            StartButton.IsEnabled = true;
             CancelButton.IsEnabled = false;
             OperationProgressBar.IsIndeterminate = false;
             
@@ -145,20 +143,20 @@ public sealed partial class LogStatusPage : Page
         OperationSummaryTextBlock.Text = _appState.GetOperationSummary();
     }
 
-    private void UpdateStartButtonState()
-    {
-        StartButton.IsEnabled = _appState.CanStartOperations();
-
-        if (!StartButton.IsEnabled)
-        {
-            OperationSummaryTextBlock.Text = "Please configure operations and select a folder first.";
-        }
-    }
-
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
         UpdateOperationSummary();
-        UpdateStartButtonState();
+
+        // Check if we should auto-start operations
+        if (e.Parameter is bool shouldAutoStart && shouldAutoStart)
+        {
+            // Use DispatcherQueue to ensure UI is fully loaded
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(100); // Small delay to ensure UI is ready
+                StartButton_Click(this, new RoutedEventArgs());
+            });
+        }
     }
 }

@@ -61,8 +61,6 @@
         <!-- Control Buttons -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" 
                     Margin="20" Spacing="15">
-            <Button x:Name="StartButton" Content="Start Operations" Click="StartButton_Click" 
-                    Style="{ThemeResource AccentButtonStyle}" MinWidth="150" />
             <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" 
                     IsEnabled="False" MinWidth="100" />
         </StackPanel>
