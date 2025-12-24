@@ -62,7 +62,7 @@ public class OllamaService
             - If no renaming is required, return an empty list to signify no changes required
             
             Respond ONLY with a JSON object in this exact format (no markdown, no extra text):
-            {"renames": [{"old": "original_name.ext", "new": "00.ext"}, ...]}
+            {"renames": [{"old": "original_name.ext", "new": "00.ext"}, ..., {"old": "original_name.ext", "new": "99.ext"}]}
             
             Include all renamed files in the renames array.
 
