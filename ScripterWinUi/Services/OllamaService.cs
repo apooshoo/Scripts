@@ -16,7 +16,8 @@ public class OllamaService
 {
     private static readonly HttpClient _httpClient = new();
     private const string DefaultBaseUrl = "http://localhost:11434";
-    private const string DefaultModel = "llama3.1:8b";
+    //private const string DefaultModel = "llama3.1:8b"; // too big
+    private const string DefaultModel = "llama3.2:3b"; // better, more lightweight
     private const int MaxFilesToAnalyze = 500;
 
     public string BaseUrl { get; set; } = DefaultBaseUrl;
