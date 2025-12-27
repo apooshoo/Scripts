@@ -23,8 +23,25 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         Current = this;
+        
+        SetWindowSize();
+        
         ContentFrame.Navigated += ContentFrame_Navigated;
         NavigateToPage(0);
+    }
+
+    private void SetWindowSize()
+    {
+        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+        var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+        
+        if (appWindow != null)
+        {
+            var size = appWindow.Size;
+            var newWidth = Math.Max(size.Width / 2, 600);
+            appWindow.Resize(new Windows.Graphics.SizeInt32 { Width = newWidth, Height = size.Height });
+        }
     }
 
     private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
